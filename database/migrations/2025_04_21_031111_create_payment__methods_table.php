@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('type')->nullable();
             $table->string('description')->nullable();
+            $table->boolean('is_deleted')->default(false);
             $table->timestamps();
         });
     }

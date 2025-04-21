@@ -7,4 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class City extends Model
 {
     //
+    protected $table = 'cities';
+    protected $fillable = [
+        'id',
+        'name',
+        'code',
+        'is_deleted',
+    ];
 }

@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('password');
+            $table->boolean('is_deleted')->default(false);
             // $table->string('role_id')->nullable();
             // $table->foreign('role_id')->references('id')->on('roles')->nullOnDelete()->cascadeOnUpdate();
-            $table->boolean('is_deleted')->default(false);
             $table->timestamps();
         });
     }

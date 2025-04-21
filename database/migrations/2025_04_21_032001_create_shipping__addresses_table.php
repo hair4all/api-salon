@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('district_id')->nullable();
             $table->foreign('district_id')->references('id')->on('districts')->nullOnDelete()->cascadeOnUpdate();
             $table->text('address')->nullable();
+            $table->boolean('is_deleted')->default(false);
             $table->timestamps();
         });
     }

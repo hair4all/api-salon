@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('code')->unique();
+            $table->boolean('is_deleted')->default(false);
             $table->timestamps();
         });
     }

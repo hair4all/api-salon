@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('payment_method_id')->nullable();
             $table->foreign('payment_method_id')->references('id')->on('payment__methods')->onDelete('cascade');
             $table->string('status')->nullable();
+            $table->boolean('is_deleted')->default(false);
             $table->timestamps();
         });
     }

@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string('payment_method_id')->nullable();
             $table->foreign('payment_method_id')->references('id')->on('payment__methods')->nullOnDelete()->cascadeOnUpdate();
             // $table->integer('discount')->nullable();
+            $table->boolean('is_deleted')->default(false);
             $table->timestamps();
         });
     }

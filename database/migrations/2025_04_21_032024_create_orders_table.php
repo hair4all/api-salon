@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('courier')->nullable();
             $table->string('shipping_cost')->nullable();
             $table->string('status')->nullable();
+            $table->boolean('is_deleted')->default(false);
             $table->timestamps();
         });
     }

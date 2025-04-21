@@ -7,4 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class Service extends Model
 {
     //
+    protected $table = 'services';
+    protected $fillable = [
+        'id',
+        'branch_id',
+        'name',
+        'description',
+        'price',
+        'discount',
+        'expiry_discount_date',
+        'is_deleted',
+    ];
 }

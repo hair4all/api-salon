@@ -20,8 +20,8 @@ return new class extends Migration {
             $table->decimal('price')->nullable();
             $table->integer('discount')->nullable();
             $table->date('expiry_discount_date')->nullable();
-            // $table->decimal('discounted_price')->nullable();
             $table->boolean('is_deleted')->default(false);
+            // $table->decimal('discounted_price')->nullable();
             $table->timestamps();
         });
     }
