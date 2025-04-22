@@ -44,11 +44,8 @@ class BookingController extends Controller
             if ($request->has('status')) {
                 $bookings->where('status', $request->query('status'));
             }
-            return response()->json([
-                'status' => true,
-                'message' => 'Booking list',
-                'data' => $bookings->paginate($request->limit ?? 10),
-            ]);
+            return response()->json($bookings->paginate($request->limit ?? 10),
+            );
 
         } catch (\Throwable $th) {
             //throw $th;

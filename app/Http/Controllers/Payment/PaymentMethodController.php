@@ -19,11 +19,8 @@ class PaymentMethodController extends Controller
             if ($request->has('name')) {
                 $paymentMethod->where('name', $request->query('name'));
             }
-            return response()->json([
-                'status' => true,
-                'message' => 'Payment Method',
-                'data' => $paymentMethod->get()
-            ]);
+            return response()->json( $paymentMethod->paginate($request->query('limit') ?? 10)
+            );
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([

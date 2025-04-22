@@ -20,11 +20,8 @@ class BookingServiceController extends Controller
             if ($request->has('search')) {
                 $booking_services = $booking_services->where('name', 'like', '%' . $request->search . '%');
             }
-            return response()->json([
-                'status' => true,
-                'message' => 'Booking Services',
-                'data' => $booking_services->paginate($request->limit ?? 10),
-            ]);
+            return response()->json( $booking_services->paginate($request->limit ?? 10),
+            );
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([

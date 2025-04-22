@@ -19,11 +19,8 @@ class WithdrawHistoriesController extends Controller
             if ($request->has('client_id')) {
                 $withdrawHistories->where('client_id', $request->query('client_id'));
             }
-            return response()->json([
-                'status' => true,
-                'message' => 'Withdraw Histories',
-                'data' => $withdrawHistories->get()
-            ]);
+            return response()->json($withdrawHistories->paginate($request->query('limit') ?? 10)
+            );
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([
@@ -68,7 +65,7 @@ class WithdrawHistoriesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         //
         try {
@@ -98,7 +95,7 @@ class WithdrawHistoriesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,  $id)
+    public function update(Request $request, $id)
     {
         //
         try {
@@ -130,7 +127,7 @@ class WithdrawHistoriesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
         //
         try {

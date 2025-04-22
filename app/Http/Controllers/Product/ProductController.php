@@ -14,6 +14,24 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         //
+        try {
+            $products = Product::query()->where('is_deleted', 0);
+            if ($request->has('name')) {
+                $products->where('name', 'like', '%' . $request->query('name') . '%');
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Products',
+                'data' => $products->paginate($request->query('limit') ?? 10)
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -22,29 +40,107 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            $request->validate([
+                'inventory_id' => 'required|integer',
+                'category_id' => 'required|integer',
+                'branch_id' => 'required|integer',
+                'discount' => 'nullable|numeric',
+                'expiry_discount_date' => 'nullable|date',
+                'status' => 'required|boolean',
+            ]);
+            $product = Product::create($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Product created successfully',
+                'data' => $product,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         //
+        try {
+            $product = Product::query()->where('is_deleted', 0)->findOrFail($id);
+            return response()->json([
+                'status' => true,
+                'message' => 'Product',
+                'data' => $product,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,  $id)
+    public function update(Request $request, $id)
     {
         //
+        try {
+            $request->validate([
+                'inventory_id' => 'nullable|integer',
+                'category_id' => 'nullable|integer',
+                'branch_id' => 'nullable|integer',
+                'discount' => 'nullable|numeric',
+                'expiry_discount_date' => 'nullable|date',
+                'status' => 'nullable|boolean',
+            ]);
+            $product = Product::query()->where('is_deleted', 0)->findOrFail($id);
+            $product->update($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Product updated successfully',
+                'data' => $product,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
         //
+        try {
+            $product = Product::query()->where('is_deleted', 0)->findOrFail($id);
+            $product->update(['is_deleted' => 1]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Product deleted successfully',
+                'data' => null,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 }

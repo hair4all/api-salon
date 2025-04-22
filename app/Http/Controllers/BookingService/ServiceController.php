@@ -20,11 +20,8 @@ class ServiceController extends Controller
             if ($request->has('search')) {
                 $services->where('name', 'like', '%' . $request->search . '%');
             }
-            return response()->json([
-                'status' => true,
-                'message' => 'Get all services',
-                'data' => $services->paginate($request->limit ?? 10),
-            ]);
+            return response()->json($services->paginate($request->limit ?? 10),
+            );
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([

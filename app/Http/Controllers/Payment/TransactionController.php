@@ -19,11 +19,8 @@ class TransactionController extends Controller
             if ($request->has('client_id')) {
                 $transactions->where('client_id', $request->query('client_id'));
             }
-            return response()->json([
-                'status' => true,
-                'message' => 'Transactions',
-                'data' => $transactions->get()
-            ]);
+            return response()->json( $transactions->paginate($request->query('limit') ?? 10)
+            );
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([
@@ -67,7 +64,7 @@ class TransactionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         //
         try {
@@ -97,7 +94,7 @@ class TransactionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,  $id)
+    public function update(Request $request, $id)
     {
         //
         try {
@@ -128,7 +125,7 @@ class TransactionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
         //
         try {

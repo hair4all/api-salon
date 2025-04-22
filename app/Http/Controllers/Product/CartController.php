@@ -14,6 +14,21 @@ class CartController extends Controller
     public function index(Request $request)
     {
         //
+        try {
+            $cart = Cart::query()->where('is_deleted', 0);
+            if ($request->has('client_id')) {
+                $cart->where('client_id', $request->query('client_id'));
+            }
+            return response()->json($cart->paginate($request->query('limit') ?? 10)
+            );
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -22,6 +37,27 @@ class CartController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            $request->validate([
+                'client_id' => 'nullable|integer',
+                'product_id' => 'nullable|integer',
+                'quantity' => 'nullable|integer',
+                'status' => 'nullable|string',
+            ]);
+            $cart = Cart::create($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Cart created successfully',
+                'data' => $cart,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -30,6 +66,27 @@ class CartController extends Controller
     public function show($id)
     {
         //
+        try {
+            $cart = Cart::query()->where('is_deleted', 0)->where('id', $id)->first();
+            if (!$cart) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Cart not found',
+                ]);
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Cart',
+                'data' => $cart
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -38,13 +95,62 @@ class CartController extends Controller
     public function update(Request $request, $id)
     {
         //
+        try {
+            $request->validate([
+                'client_id' => 'nullable|integer',
+                'product_id' => 'nullable|integer',
+                'quantity' => 'nullable|integer',
+                'status' => 'nullable|string',
+            ]);
+            $cart = Cart::query()->where('is_deleted', 0)->where('id', $id)->first();
+            if (!$cart) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Cart not found',
+                ]);
+            }
+            $cart->update($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Cart updated successfully',
+                'data' => $cart,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
         //
+        try {
+            $cart = Cart::query()->where('is_deleted', 0)->where('id', $id)->first();
+            if (!$cart) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Cart not found',
+                ]);
+            }
+            $cart->update(['is_deleted' => 1]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Cart deleted successfully',
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 }

@@ -19,11 +19,8 @@ class PaymentGatewayResponseController extends Controller
             if ($request->has('payment_id')) {
                 $paymentGatewayResponse->where('payment_id', $request->query('payment_id'));
             }
-            return response()->json([
-                'status' => true,
-                'message' => 'Payment Gateway Response',
-                'data' => $paymentGatewayResponse->get()
-            ]);
+            return response()->json($paymentGatewayResponse->paginate($request->query('limit') ?? 10)
+            );
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([

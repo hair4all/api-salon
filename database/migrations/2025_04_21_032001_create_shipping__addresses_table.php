@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('shipping__addresses', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id')->nullable();
-            $table->foreign('user_id')->references('id')->on('members')->nullOnDelete()->cascadeOnUpdate();
+            $table->string('member_id')->nullable();
+            $table->foreign('member_id')->references('id')->on('members')->nullOnDelete()->cascadeOnUpdate();
             $table->string('recipient_name')->nullable();
             $table->string('phone')->nullable();
             $table->string('province_id')->nullable();

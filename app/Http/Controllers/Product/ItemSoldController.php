@@ -14,6 +14,21 @@ class ItemSoldController extends Controller
     public function index(Request $request)
     {
         //
+        try {
+            $itemSold = Item_Sold::query()->where('is_deleted', 0);
+            if ($request->has('product_id')) {
+                $itemSold->where('product_id', $request->query('product_id'));
+            }
+            return response()->json($itemSold->paginate($request->query('limit') ?? 10)
+            );
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -22,22 +37,92 @@ class ItemSoldController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            $request->validate([
+                'inventory_id' => 'nullable|integer',
+                'quantity' => 'nullable|integer',
+                'price' => 'nullable|numeric',
+                'sold_date' => 'nullable|date',
+            ]);
+            $itemSold = Item_Sold::create($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Item Sold created successfully',
+                'data' => $itemSold,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         //
+        try {
+            $itemSold = Item_Sold::query()->where('is_deleted', 0)->find($id);
+            if (!$itemSold) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Item Sold not found',
+                ]);
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Item Sold',
+                'data' => $itemSold
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,  $id)
+    public function update(Request $request, $id)
     {
         //
+        try {
+            $request->validate([
+                'inventory_id' => 'nullable|integer',
+                'quantity' => 'nullable|integer',
+                'price' => 'nullable|numeric',
+                'sold_date' => 'nullable|date',
+            ]);
+            $itemSold = Item_Sold::query()->where('is_deleted', 0)->find($id);
+            if (!$itemSold) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Item Sold not found',
+                ]);
+            }
+            $itemSold->update($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Item Sold updated successfully',
+                'data' => $itemSold,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -46,5 +131,27 @@ class ItemSoldController extends Controller
     public function destroy($id)
     {
         //
+        try {
+            $itemSold = Item_Sold::query()->where('is_deleted', 0)->find($id);
+            if (!$itemSold) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Item Sold not found',
+                ]);
+            }
+            $itemSold->update(['is_deleted' => 1]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Item Sold deleted successfully',
+                'data' => null
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 }

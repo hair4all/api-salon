@@ -13,6 +13,19 @@ class CityController extends Controller
     public function index(Request $request)
     {
         //
+        try {
+            $cities = City::query()->where('is_deleted', 0);
+            if ($request->has('name')) {
+                $cities->where('name', 'like', '%' . $request->query('name') . '%');
+            }
+            return response()->json($cities->paginate($request->query('limit') ?? 10));
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -21,6 +34,24 @@ class CityController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'code' => 'required|integer|exists:states,id',
+            ]);
+            $city = City::create($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'City created successfully',
+                'data' => $city,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -29,6 +60,20 @@ class CityController extends Controller
     public function show($id)
     {
         //
+        try {
+            $city = City::findOrFail($id);
+            return response()->json([
+                'status' => true,
+                'message' => 'City retrieved successfully',
+                'data' => $city,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -37,6 +82,25 @@ class CityController extends Controller
     public function update(Request $request, $id)
     {
         //
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'code' => 'required|integer|exists:states,id',
+            ]);
+            $city = City::findOrFail($id);
+            $city->update($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'City updated successfully',
+                'data' => $city,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -45,5 +109,20 @@ class CityController extends Controller
     public function destroy( $id)
     {
         //
+        try {
+            $city = City::findOrFail($id);
+            $city->update(['is_deleted' => 1]);
+            return response()->json([
+                'status' => true,
+                'message' => 'City deleted successfully',
+                'data' => null,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 }
