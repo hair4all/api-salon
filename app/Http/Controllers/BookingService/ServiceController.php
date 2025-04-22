@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\BookingService;
 
-use App\Models\Topup_History;
+use App\Http\Controllers\Controller;
+
+use App\Models\Service;
 use Illuminate\Http\Request;
 
-class TopupHistoryController extends Controller
+class ServiceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
     }
@@ -26,7 +28,7 @@ class TopupHistoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Topup_History $topup_History)
+    public function show( $id)
     {
         //
     }
@@ -34,7 +36,7 @@ class TopupHistoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Topup_History $topup_History)
+    public function update(Request $request,  $id)
     {
         //
     }
@@ -42,7 +44,7 @@ class TopupHistoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Topup_History $topup_History)
+    public function destroy( $id)
     {
         //
     }

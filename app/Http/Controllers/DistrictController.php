@@ -10,7 +10,7 @@ class DistrictController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
     }
@@ -26,7 +26,7 @@ class DistrictController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(District $district)
+    public function show($id)
     {
         //
     }
@@ -34,7 +34,7 @@ class DistrictController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, District $district)
+    public function update(Request $request,  $id)
     {
         //
     }
@@ -42,7 +42,7 @@ class DistrictController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(District $district)
+    public function destroy($id)
     {
         //
     }

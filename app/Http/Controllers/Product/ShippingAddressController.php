@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Product;
 
-use App\Models\Payment_Method;
+use App\Models\Shipping_Address;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class PaymentMethodController extends Controller
+class ShippingAddressController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
     }
@@ -26,7 +27,7 @@ class PaymentMethodController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Payment_Method $payment_Method)
+    public function show( $id)
     {
         //
     }
@@ -34,7 +35,7 @@ class PaymentMethodController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Payment_Method $payment_Method)
+    public function update(Request $request,  $id)
     {
         //
     }
@@ -42,7 +43,7 @@ class PaymentMethodController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Payment_Method $payment_Method)
+    public function destroy( $id)
     {
         //
     }

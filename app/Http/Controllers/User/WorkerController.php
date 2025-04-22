@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
-use App\Models\Item_Sold;
+use App\Models\Worker;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class ItemSoldController extends Controller
+class WorkerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
     }
@@ -26,7 +27,7 @@ class ItemSoldController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Item_Sold $item_Sold)
+    public function show( $id)
     {
         //
     }
@@ -34,7 +35,7 @@ class ItemSoldController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Item_Sold $item_Sold)
+    public function update(Request $request,  $id)
     {
         //
     }
@@ -42,7 +43,7 @@ class ItemSoldController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Item_Sold $item_Sold)
+    public function destroy( $id)
     {
         //
     }

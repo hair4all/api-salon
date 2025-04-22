@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Product;
 
-use App\Models\Service_Inventories;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class ServiceInventoriesController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
     }
@@ -26,7 +27,7 @@ class ServiceInventoriesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Service_Inventories $service_Inventories)
+    public function show( $id)
     {
         //
     }
@@ -34,7 +35,7 @@ class ServiceInventoriesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Service_Inventories $service_Inventories)
+    public function update(Request $request,  $id)
     {
         //
     }
@@ -42,7 +43,7 @@ class ServiceInventoriesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Service_Inventories $service_Inventories)
+    public function destroy( $id)
     {
         //
     }

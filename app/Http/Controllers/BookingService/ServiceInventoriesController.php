@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\BookingService;
 
-use App\Models\Withdraw_Histories;
+use App\Models\Service_Inventories;
 use Illuminate\Http\Request;
 
-class WithdrawHistoriesController extends Controller
+use App\Http\Controllers\Controller;
+
+class ServiceInventoriesController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
     }
@@ -26,7 +28,7 @@ class WithdrawHistoriesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Withdraw_Histories $withdraw_Histories)
+    public function show( $id)
     {
         //
     }
@@ -34,7 +36,7 @@ class WithdrawHistoriesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Withdraw_Histories $withdraw_Histories)
+    public function update(Request $request,  $id)
     {
         //
     }
@@ -42,7 +44,7 @@ class WithdrawHistoriesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Withdraw_Histories $withdraw_Histories)
+    public function destroy( $id)
     {
         //
     }

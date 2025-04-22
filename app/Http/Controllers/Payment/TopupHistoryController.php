@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Payment;
 
-use App\Models\Order_Tracking;
+use App\Models\Topup_History;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class OrderTrackingController extends Controller
+class TopupHistoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
     }
@@ -26,7 +27,7 @@ class OrderTrackingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Order_Tracking $order_Tracking)
+    public function show( $id)
     {
         //
     }
@@ -34,7 +35,7 @@ class OrderTrackingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Order_Tracking $order_Tracking)
+    public function update(Request $request,  $id)
     {
         //
     }
@@ -42,7 +43,7 @@ class OrderTrackingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Order_Tracking $order_Tracking)
+    public function destroy( $id)
     {
         //
     }

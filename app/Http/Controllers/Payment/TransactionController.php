@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Payment;
 
-use App\Models\Service_Sold;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class ServiceSoldController extends Controller
+class TransactionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
     }
@@ -26,7 +27,7 @@ class ServiceSoldController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Service_Sold $service_Sold)
+    public function show( $id)
     {
         //
     }
@@ -34,7 +35,7 @@ class ServiceSoldController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Service_Sold $service_Sold)
+    public function update(Request $request,  $id)
     {
         //
     }
@@ -42,7 +43,7 @@ class ServiceSoldController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Service_Sold $service_Sold)
+    public function destroy( $id)
     {
         //
     }

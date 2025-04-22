@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\BookingService;
 
-use App\Models\Worker;
+use App\Http\Controllers\Controller;
+
+use App\Models\Booking_Service;
 use Illuminate\Http\Request;
 
-class WorkerController extends Controller
+class BookingServiceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
     }
@@ -26,7 +28,7 @@ class WorkerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Worker $worker)
+    public function show( $id)
     {
         //
     }
@@ -34,7 +36,7 @@ class WorkerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Worker $worker)
+    public function update(Request $request,  $id)
     {
         //
     }
@@ -42,7 +44,7 @@ class WorkerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Worker $worker)
+    public function destroy( $id)
     {
         //
     }

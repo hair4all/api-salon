@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\BookingService;
 
-use App\Models\Shipping_Address;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 
-class ShippingAddressController extends Controller
+use App\Http\Controllers\Controller;
+
+class BookingController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
     }
@@ -26,7 +28,7 @@ class ShippingAddressController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Shipping_Address $shipping_Address)
+    public function show( $id)
     {
         //
     }
@@ -34,7 +36,7 @@ class ShippingAddressController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Shipping_Address $shipping_Address)
+    public function update(Request $request,  $id)
     {
         //
     }
@@ -42,7 +44,7 @@ class ShippingAddressController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Shipping_Address $shipping_Address)
+    public function destroy( $id)
     {
         //
     }

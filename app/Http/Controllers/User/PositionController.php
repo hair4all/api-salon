@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
-use App\Models\Payment_Gateway_Response;
+use App\Models\Position;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class PaymentGatewayResponseController extends Controller
+class PositionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
     }
@@ -26,7 +27,7 @@ class PaymentGatewayResponseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Payment_Gateway_Response $payment_Gateway_Response)
+    public function show( $id)
     {
         //
     }
@@ -34,7 +35,7 @@ class PaymentGatewayResponseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Payment_Gateway_Response $payment_Gateway_Response)
+    public function update(Request $request,  $id)
     {
         //
     }
@@ -42,7 +43,7 @@ class PaymentGatewayResponseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Payment_Gateway_Response $payment_Gateway_Response)
+    public function destroy( $id)
     {
         //
     }
