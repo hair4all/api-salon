@@ -14,6 +14,24 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         //
+        try {
+            $transactions = Transaction::query()->where('is_deleted', 0);
+            if ($request->has('client_id')) {
+                $transactions->where('client_id', $request->query('client_id'));
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Transactions',
+                'data' => $transactions->get()
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -22,6 +40,28 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            $request->validate([
+                'client_id' => 'nullable|integer',
+                'worker_id' => 'nullable|integer',
+                'transaction_date' => 'nullable|date',
+                'total_price' => 'nullable|numeric',
+                'payment_method_id' => 'nullable|integer',
+            ]);
+            $transaction = Transaction::create($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Transaction created successfully',
+                'data' => $transaction,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -30,6 +70,28 @@ class TransactionController extends Controller
     public function show( $id)
     {
         //
+        try {
+            $transaction = Transaction::findOrFail($id)->where('is_deleted', 0);
+            if (!$transaction) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Transaction not found',
+                    'data' => null,
+                ]);
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Transaction',
+                'data' => $transaction
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -38,6 +100,29 @@ class TransactionController extends Controller
     public function update(Request $request,  $id)
     {
         //
+        try {
+            $request->validate([
+                'client_id' => 'nullable|integer',
+                'worker_id' => 'nullable|integer',
+                'transaction_date' => 'nullable|date',
+                'total_price' => 'nullable|numeric',
+                'payment_method_id' => 'nullable|integer',
+            ]);
+            $transaction = Transaction::findOrFail($id);
+            $transaction->update($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Transaction updated successfully',
+                'data' => $transaction,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -46,5 +131,20 @@ class TransactionController extends Controller
     public function destroy( $id)
     {
         //
+        try {
+            $transaction = Transaction::findOrFail($id);
+            $transaction->update(['is_deleted' => 1]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Transaction deleted successfully',
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 }

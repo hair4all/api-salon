@@ -18,61 +18,61 @@ use App\Http\Controllers\Controller;
 
 class BookingController extends Controller
 {
-/**
- * Display a listing of the resource.
- *
- * Retrieves bookings with optional filters:
- * - search by client name
- * - filter by creation date
- * - filter by status
- * Results are paginated (default limit: 10).
- *
- * @param  \Illuminate\Http\Request  $request
- * @return \Illuminate\Http\JsonResponse
- */
+    /**
+     * Display a listing of the resource.
+     *
+     * Retrieves bookings with optional filters:
+     * - search by client name
+     * - filter by creation date
+     * - filter by status
+     * Results are paginated (default limit: 10).
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index(Request $request)
-        {
-            //
-            try {
-                $bookings = Booking::query()->where('is_deleted',0);
-                if($request->has('search')) {
-                    $bookings->where('name', 'like', '%' . $request->input('search') . '%');
-                }
-                if($request->has('date')) {
-                    $bookings->whereDate('created_at', $request->input('date'));
-                }
-                if($request->has('status')) {
-                    $bookings->where('status', $request->input('status'));
-                }
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Booking list',
-                    'data' => $bookings->paginate($request->limit ?? 10),
-                ]);
-
-            } catch (\Throwable $th) {
-                //throw $th;
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Something went wrong',
-                    'data' => $th->getMessage(),
-                ]);
+    {
+        //
+        try {
+            $bookings = Booking::query()->where('is_deleted', 0);
+            if ($request->has('search')) {
+                $bookings->where('name', 'like', '%' . $request->query('search') . '%');
             }
-        }
+            if ($request->has('date')) {
+                $bookings->whereDate('created_at', $request->query('date'));
+            }
+            if ($request->has('status')) {
+                $bookings->where('status', $request->query('status'));
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Booking list',
+                'data' => $bookings->paginate($request->limit ?? 10),
+            ]);
 
-/**
- * Store a newly created resource in storage.
- *
- * Validates the input for:
- * - client_id (integer)
- * - booking_date (date)
- * - notes (nullable string)
- * - status (string)
- * Creates and returns the new booking record.
- *
- * @param  \Illuminate\Http\Request  $request
- * @return \Illuminate\Http\JsonResponse
- */
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * Validates the input for:
+     * - client_id (integer)
+     * - booking_date (date)
+     * - notes (nullable string)
+     * - status (string)
+     * Creates and returns the new booking record.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(Request $request)
     {
         //
@@ -102,20 +102,20 @@ class BookingController extends Controller
         }
     }
 
-/**
- * Display the specified resource.
- *
- * Retrieves a single booking by ID if not marked as deleted.
- * Returns an error response if the booking is not found.
- *
- * @param  int  $id
- * @return \Illuminate\Http\JsonResponse
- */
-    public function show( $id)
+    /**
+     * Display the specified resource.
+     *
+     * Retrieves a single booking by ID if not marked as deleted.
+     * Returns an error response if the booking is not found.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
     {
         //
         try {
-            $booking = Booking::find($id)->where('is_deleted',0)->first();
+            $booking = Booking::find($id)->where('is_deleted', 0)->first();
             if (!$booking) {
                 return response()->json([
                     'status' => false,
@@ -138,19 +138,19 @@ class BookingController extends Controller
     }
 
 
-/**
- * Update the specified resource in storage.
- *
- * Validates the input fields (same rules as store),
- * then updates the existing booking by ID.
- * Returns the updated booking or an error if not found.
- *
- * @param  \Illuminate\Http\Request  $request
- * @param  int  $id
- * @return \Illuminate\Http\JsonResponse
- */
+    /**
+     * Update the specified resource in storage.
+     *
+     * Validates the input fields (same rules as store),
+     * then updates the existing booking by ID.
+     * Returns the updated booking or an error if not found.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
 
-    public function update(Request $request,  $id)
+    public function update(Request $request, $id)
     {
         //
         try {
@@ -185,16 +185,16 @@ class BookingController extends Controller
         }
     }
 
-   /**
- * Remove the specified resource from storage.
- *
- * Soft-deletes the booking by setting 'is_deleted' to true.
- * Returns a success message or error if not found.
- *
- * @param  int  $id
- * @return \Illuminate\Http\JsonResponse
- */
-    public function destroy( $id)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * Soft-deletes the booking by setting 'is_deleted' to true.
+     * Returns a success message or error if not found.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy($id)
     {
         //
         try {

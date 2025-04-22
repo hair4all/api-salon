@@ -18,7 +18,7 @@ class ServiceInventoriesController extends Controller
         try {
             $serviceInventories = Service_Inventories::query()->where('is_deleted', 0);
             if ($request->has('service_id')) {
-                $serviceInventories->where('service_id', $request->input('service_id'));
+                $serviceInventories->where('service_id', $request->query('service_id'));
             }
             return response()->json([
                 'status' => true,
@@ -45,7 +45,7 @@ class ServiceInventoriesController extends Controller
             $request->validate([
                 'service_id' => 'nullable|integer',
                 'inventory_id' => 'nullable|integer',
-                'quantity'   => 'nullable|integer',
+                'quantity' => 'nullable|integer',
             ]);
             $serviceInventory = Service_Inventories::create($request->all());
             return response()->json([
@@ -66,7 +66,7 @@ class ServiceInventoriesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         //
         try {
@@ -96,14 +96,14 @@ class ServiceInventoriesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,  $id)
+    public function update(Request $request, $id)
     {
         //
         try {
             $request->validate([
                 'service_id' => 'nullable|integer',
                 'inventory_id' => 'nullable|integer',
-                'quantity'   => 'nullable|integer',
+                'quantity' => 'nullable|integer',
             ]);
             $serviceInventory = Service_Inventories::query()->where('id', $id)->where('is_deleted', 0)->first();
             if ($serviceInventory) {
@@ -132,7 +132,7 @@ class ServiceInventoriesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
         //
         try {

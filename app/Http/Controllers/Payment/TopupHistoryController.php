@@ -14,6 +14,24 @@ class TopupHistoryController extends Controller
     public function index(Request $request)
     {
         //
+        try {
+            $topupHistory = Topup_History::query()->where('is_deleted', 0);
+            if ($request->has('client_id')) {
+                $topupHistory->where('client_id', $request->query('client_id'));
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Topup History',
+                'data' => $topupHistory->get()
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -22,6 +40,28 @@ class TopupHistoryController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            $request->validate([
+                'client_id' => 'nullable|integer',
+                'amount' => 'nullable|integer',
+                'topup_date' => 'nullable|date',
+                'payment_method_id' => 'nullable|integer',
+                'status' => 'nullable|string',
+            ]);
+            $topupHistory = Topup_History::create($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Topup History created successfully',
+                'data' => $topupHistory,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -30,6 +70,27 @@ class TopupHistoryController extends Controller
     public function show( $id)
     {
         //
+        try {
+            $topupHistory = Topup_History::query()->where('is_deleted', 0)->where('id', $id)->first();
+            if (!$topupHistory) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Topup History not found',
+                ]);
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Topup History',
+                'data' => $topupHistory
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -38,6 +99,29 @@ class TopupHistoryController extends Controller
     public function update(Request $request,  $id)
     {
         //
+        try {
+            $request->validate([
+                'client_id' => 'nullable|integer',
+                'amount' => 'nullable|integer',
+                'topup_date' => 'nullable|date',
+                'payment_method_id' => 'nullable|integer',
+                'status' => 'nullable|string',
+            ]);
+            $topupHistory = Topup_History::findOrFail($id);
+            $topupHistory->update($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Topup History updated successfully',
+                'data' => $topupHistory,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -46,5 +130,21 @@ class TopupHistoryController extends Controller
     public function destroy( $id)
     {
         //
+        try {
+            $topupHistory = Topup_History::findOrFail($id);
+            $topupHistory->update(['is_deleted' => 1]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Topup History deleted successfully',
+                'data' => null,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 }

@@ -14,6 +14,24 @@ class WithdrawHistoriesController extends Controller
     public function index(Request $request)
     {
         //
+        try {
+            $withdrawHistories = Withdraw_Histories::query()->where('is_deleted', 0);
+            if ($request->has('client_id')) {
+                $withdrawHistories->where('client_id', $request->query('client_id'));
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Withdraw Histories',
+                'data' => $withdrawHistories->get()
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -22,6 +40,29 @@ class WithdrawHistoriesController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            $request->validate([
+                'withdraw_id' => 'nullable|integer',
+                // 'inventory_id' => 'nullable|integer',
+                'amount' => 'nullable|integer',
+                'withdraw_date' => 'nullable|date',
+                'payment_method_id' => 'nullable|integer',
+                'status' => 'nullable|string',
+            ]);
+            $withdrawHistories = Withdraw_Histories::create($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Withdraw History created successfully',
+                'data' => $withdrawHistories,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -30,6 +71,28 @@ class WithdrawHistoriesController extends Controller
     public function show( $id)
     {
         //
+        try {
+            $withdrawHistories = Withdraw_Histories::query()->where('id', $id)->where('is_deleted', 0)->first();
+            if ($withdrawHistories) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Withdraw History',
+                    'data' => $withdrawHistories
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Withdraw History not found',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -38,6 +101,30 @@ class WithdrawHistoriesController extends Controller
     public function update(Request $request,  $id)
     {
         //
+        try {
+            $request->validate([
+                'withdraw_id' => 'nullable|integer',
+                // 'inventory_id' => 'nullable|integer',
+                'amount' => 'nullable|integer',
+                'withdraw_date' => 'nullable|date',
+                'payment_method_id' => 'nullable|integer',
+                'status' => 'nullable|string',
+            ]);
+            $withdrawHistories = Withdraw_Histories::findOrFail($id);
+            $withdrawHistories->update($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Withdraw History updated successfully',
+                'data' => $withdrawHistories,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -46,5 +133,21 @@ class WithdrawHistoriesController extends Controller
     public function destroy( $id)
     {
         //
+        try {
+            $withdrawHistories = Withdraw_Histories::findOrFail($id);
+            $withdrawHistories->update(['is_deleted' => 1]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Withdraw History deleted successfully',
+                'data' => null,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 }

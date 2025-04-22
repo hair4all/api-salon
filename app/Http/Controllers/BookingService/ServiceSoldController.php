@@ -19,7 +19,7 @@ class ServiceSoldController extends Controller
         try {
             $serviceSold = Service_Sold::query()->where('is_deleted', 0);
             if ($request->has('service_id')) {
-                $serviceSold->where('service_id', $request->input('service_id'));
+                $serviceSold->where('service_id', $request->query('service_id'));
             }
             return response()->json([
                 'status' => true,
@@ -102,7 +102,7 @@ class ServiceSoldController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,  $id)
+    public function update(Request $request, $id)
     {
         //
         try {
@@ -143,7 +143,7 @@ class ServiceSoldController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
         //
         try {
