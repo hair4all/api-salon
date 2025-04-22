@@ -15,6 +15,24 @@ class ServiceInventoriesController extends Controller
     public function index(Request $request)
     {
         //
+        try {
+            $serviceInventories = Service_Inventories::query()->where('is_deleted', 0);
+            if ($request->has('service_id')) {
+                $serviceInventories->where('service_id', $request->input('service_id'));
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Service Inventories',
+                'data' => $serviceInventories->get()
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -23,6 +41,26 @@ class ServiceInventoriesController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            $request->validate([
+                'service_id' => 'nullable|integer',
+                'inventory_id' => 'nullable|integer',
+                'quantity'   => 'nullable|integer',
+            ]);
+            $serviceInventory = Service_Inventories::create($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Service Inventory created successfully',
+                'data' => $serviceInventory,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -31,6 +69,28 @@ class ServiceInventoriesController extends Controller
     public function show( $id)
     {
         //
+        try {
+            $serviceInventory = Service_Inventories::query()->where('id', $id)->where('is_deleted', 0)->first();
+            if ($serviceInventory) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Get service inventory',
+                    'data' => $serviceInventory,
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Service Inventory not found',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -39,6 +99,34 @@ class ServiceInventoriesController extends Controller
     public function update(Request $request,  $id)
     {
         //
+        try {
+            $request->validate([
+                'service_id' => 'nullable|integer',
+                'inventory_id' => 'nullable|integer',
+                'quantity'   => 'nullable|integer',
+            ]);
+            $serviceInventory = Service_Inventories::query()->where('id', $id)->where('is_deleted', 0)->first();
+            if ($serviceInventory) {
+                $serviceInventory->update($request->all());
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Service Inventory updated successfully',
+                    'data' => $serviceInventory,
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Service Inventory not found',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -47,5 +135,27 @@ class ServiceInventoriesController extends Controller
     public function destroy( $id)
     {
         //
+        try {
+            $serviceInventory = Service_Inventories::query()->where('id', $id)->where('is_deleted', 0)->first();
+            if ($serviceInventory) {
+                $serviceInventory->update(['is_deleted' => 1]);
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Service Inventory deleted successfully',
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Service Inventory not found',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 }

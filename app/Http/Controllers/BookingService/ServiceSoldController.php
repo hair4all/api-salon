@@ -16,6 +16,24 @@ class ServiceSoldController extends Controller
     public function index(Request $request)
     {
         //
+        try {
+            $serviceSold = Service_Sold::query()->where('is_deleted', 0);
+            if ($request->has('service_id')) {
+                $serviceSold->where('service_id', $request->input('service_id'));
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Service Sold',
+                'data' => $serviceSold->get()
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -24,6 +42,30 @@ class ServiceSoldController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            $request->validate([
+                'service_id' => 'nullable|integer',
+                // 'inventory_id' => 'nullable|integer',
+                // 'quantity' => 'nullable|integer',
+                'client_id' => 'nullable|integer',
+                'branch_id' => 'nullable|integer',
+                'worker_id' => 'nullable|integer',
+                'sold_date' => 'nullable|date',
+            ]);
+            $serviceSold = Service_Sold::create($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Service Sold created successfully',
+                'data' => $serviceSold,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -32,6 +74,29 @@ class ServiceSoldController extends Controller
     public function show($id)
     {
         //
+        try {
+            $serviceSold = Service_Sold::query()->where('id', $id)->where('is_deleted', 0)->first();
+            if ($serviceSold) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Service Sold',
+                    'data' => $serviceSold
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Service Sold not found',
+                    'data' => null
+                ]);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -40,6 +105,39 @@ class ServiceSoldController extends Controller
     public function update(Request $request,  $id)
     {
         //
+        try {
+            $request->validate([
+                'service_id' => 'nullable|integer',
+                // 'inventory_id' => 'nullable|integer',
+                // 'quantity' => 'nullable|integer',
+                'client_id' => 'nullable|integer',
+                'branch_id' => 'nullable|integer',
+                'worker_id' => 'nullable|integer',
+                'sold_date' => 'nullable|date',
+            ]);
+            $serviceSold = Service_Sold::query()->where('id', $id)->where('is_deleted', 0)->first();
+            if ($serviceSold) {
+                $serviceSold->update($request->all());
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Service Sold updated successfully',
+                    'data' => $serviceSold,
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Service Sold not found',
+                    'data' => null
+                ]);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -48,5 +146,29 @@ class ServiceSoldController extends Controller
     public function destroy( $id)
     {
         //
+        try {
+            $serviceSold = Service_Sold::query()->where('id', $id)->where('is_deleted', 0)->first();
+            if ($serviceSold) {
+                $serviceSold->update(['is_deleted' => 1]);
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Service Sold deleted successfully',
+                    'data' => null
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Service Sold not found',
+                    'data' => null
+                ]);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 }

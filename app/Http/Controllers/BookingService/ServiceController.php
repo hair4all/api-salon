@@ -15,6 +15,24 @@ class ServiceController extends Controller
     public function index(Request $request)
     {
         //
+        try {
+            $services = Service::query()->where('is_delete', 0);
+            if ($request->has('search')) {
+                $services->where('name', 'like', '%' . $request->search . '%');
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Get all services',
+                'data' => $services->paginate($request->limit ?? 10),
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -23,6 +41,29 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            $request->validate([
+                'branch_id'            => 'nullable|integer',
+                'name'                 => 'nullable|string',
+                'description'          => 'nullable|string',
+                'price'                => 'nullable|numeric',
+                'discount'             => 'nullable|numeric',
+                'expiry_discount_date' => 'nullable|date',
+            ]);
+            $service = Service::create($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Service created successfully',
+                'data' => $service,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -31,6 +72,28 @@ class ServiceController extends Controller
     public function show( $id)
     {
         //
+        try {
+            $service = Service::query()->where('id', $id)->where('is_delete', 0)->first();
+            if ($service) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Get service',
+                    'data' => $service,
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Service not found',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -39,6 +102,30 @@ class ServiceController extends Controller
     public function update(Request $request,  $id)
     {
         //
+        try {
+            $request->validate([
+                'branch_id'            => 'nullable|integer',
+                'name'                 => 'nullable|string',
+                'description'          => 'nullable|string',
+                'price'                => 'nullable|numeric',
+                'discount'             => 'nullable|numeric',
+                'expiry_discount_date' => 'nullable|date',
+            ]);
+            $service = Service::findOrFail($id);
+            $service->update($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Service updated successfully',
+                'data' => $service,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -47,5 +134,20 @@ class ServiceController extends Controller
     public function destroy( $id)
     {
         //
+        try {
+            $service = Service::findOrFail($id);
+            $service->update(['is_delete' => 1]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Service deleted successfully',
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ]);
+        }
     }
 }
