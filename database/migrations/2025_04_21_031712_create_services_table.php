@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('branch_id')->nullable();
             $table->foreign('branch_id')->references('id')->on('branches')->nullOnDelete()->cascadeOnUpdate();
             $table->string('name')->nullable();
+            $table->string('image')->nullable();
             $table->string('description')->nullable();
             $table->decimal('price')->nullable();
             $table->integer('discount')->nullable();
