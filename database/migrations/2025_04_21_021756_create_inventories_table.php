@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
+            $table->string('image')->nullable();
             $table->string('name')->nullable();
             $table->string('branch_id')->nullable();
             $table->foreign('branch_id')->references('id')->on('branches')->nullOnDelete()->cascadeOnUpdate();

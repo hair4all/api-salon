@@ -11,17 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('payment__gateway__responses', function (Blueprint $table) {
             $table->id();
-            $table->string('order_number')->unique()->nullable();
             $table->string('transaction_id')->nullable();
             $table->foreign('transaction_id')->references('id')->on('transactions')->nullOnDelete()->cascadeOnUpdate();
-            $table->string('cart_id')->nullable();
-            $table->string('shipping_address_id')->nullable();
-            $table->foreign('shipping_address_id')->references('id')->on('shipping__addresses')->nullOnDelete()->cascadeOnUpdate();
-            $table->integer('total_price')->nullable();
-            $table->string('courier')->nullable();
-            $table->string('shipping_cost')->nullable();
+            $table->string('gateway')->nullable();
+            $table->string('metadata')->nullable();
             $table->string('status')->nullable();
             $table->boolean('is_deleted')->default(false);
             $table->timestamps();
@@ -33,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('payment__gateway__responses');
     }
 };
