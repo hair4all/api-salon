@@ -40,12 +40,13 @@ class BookingServiceController extends Controller
         //
         try{
             $request->validate([
-                'client_id' => 'integer',
-                'branch_id' => 'integer',
-                'price' => 'numeric',
-                'discount' => 'nullable|numeric',
-                'expiry_discount_date' => 'nullable|date',
-                'status' => 'string',
+            'client_id' => 'nullable|integer',
+            'service_id' => 'nullable|integer',
+            'branch_id' => 'nullable|integer',
+            'price' => 'nullable|numeric',
+            'discount' => 'nullable|numeric',
+            'expiry_discount_date' => 'nullable|date',
+            'status' => 'nullable|string',
             ]);
             $booking_service = Booking_Service::create($request->all());
             return response()->json([
@@ -70,7 +71,7 @@ class BookingServiceController extends Controller
     {
         //
         try {
-            $booking_service = Booking_Service::findOrFail($id)->where('is_deleted', 0);
+            $booking_service = Booking_Service::query()->where('is_deleted', 0)->findOrFail($id);
             return response()->json([
                 'status' => true,
                 'message' => 'Booking Service',
@@ -95,14 +96,16 @@ class BookingServiceController extends Controller
         //
         try {
             $request->validate([
-                'client_id' => 'integer',
-                'branch_id' => 'integer',
-                'price' => 'numeric',
+                'client_id' => 'nullable|integer',
+                'service_id' => 'nullable|integer',
+                'branch_id' => 'nullable|integer',
+                'price' => 'nullable|numeric',
                 'discount' => 'nullable|numeric',
                 'expiry_discount_date' => 'nullable|date',
-                'status' => 'string',
+                'status' => 'nullable|string',
             ]);
             $booking_service = Booking_Service::findOrFail($id);
+            // dd($request->all());
             $booking_service->update($request->all());
             return response()->json([
                 'status' => true,

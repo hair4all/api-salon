@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Route;
 // })->middleware('auth:sanctum');
 
 // Include the routes for cities, districts, and provinces
-require __DIR__ . '/v0/city.php';
-require __DIR__ . '/v0/district.php';
-require __DIR__ . '/v0/province.php';
+require __DIR__ . '/city.php';
+require __DIR__ . '/district.php';
+require __DIR__ . '/province.php';
 
 // Include the routes for products, payments, bookings, and users
-require __DIR__ . '/v0/Product/index.php';
-require __DIR__ . '/v0/Payment/index.php';
-require __DIR__ . '/v0/BookingService/index.php';
-require __DIR__ . '/v0/User/index.php';
+require __DIR__ . '/Product/index.php';
+require __DIR__ . '/Payment/index.php';
+require __DIR__ . '/BookingService/index.php';
+require __DIR__ . '/User/index.php';
 
