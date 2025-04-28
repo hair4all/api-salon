@@ -10,7 +10,7 @@ class Withdraw_Histories extends Model
     protected $table = 'withdraw__histories';
     protected $fillable = [
         'id',
-        'withdraw_id',
+        'client_id',
         // 'inventory_id',
         'amount',
         'withdraw_date',

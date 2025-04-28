@@ -19,7 +19,8 @@ class WithdrawHistoriesController extends Controller
             if ($request->has('client_id')) {
                 $withdrawHistories->where('client_id', $request->query('client_id'));
             }
-            return response()->json($withdrawHistories->paginate($request->query('limit') ?? 10)
+            return response()->json(
+                $withdrawHistories->paginate($request->query('limit') ?? 10)
             );
         } catch (\Throwable $th) {
             //throw $th;
@@ -27,7 +28,7 @@ class WithdrawHistoriesController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -39,7 +40,7 @@ class WithdrawHistoriesController extends Controller
         //
         try {
             $request->validate([
-                'withdraw_id' => 'nullable|integer',
+                'client_id' => 'nullable|integer',
                 // 'inventory_id' => 'nullable|integer',
                 'amount' => 'nullable|integer',
                 'withdraw_date' => 'nullable|date',
@@ -58,7 +59,7 @@ class WithdrawHistoriesController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -88,7 +89,7 @@ class WithdrawHistoriesController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -120,7 +121,7 @@ class WithdrawHistoriesController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -144,7 +145,7 @@ class WithdrawHistoriesController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

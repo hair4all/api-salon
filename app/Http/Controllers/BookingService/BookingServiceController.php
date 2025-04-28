@@ -20,7 +20,8 @@ class BookingServiceController extends Controller
             if ($request->has('search')) {
                 $booking_services = $booking_services->where('name', 'like', '%' . $request->search . '%');
             }
-            return response()->json( $booking_services->paginate($request->limit ?? 10),
+            return response()->json(
+                $booking_services->paginate($request->limit ?? 10),
             );
         } catch (\Throwable $th) {
             //throw $th;
@@ -28,7 +29,7 @@ class BookingServiceController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -38,15 +39,15 @@ class BookingServiceController extends Controller
     public function store(Request $request)
     {
         //
-        try{
+        try {
             $request->validate([
-            'client_id' => 'nullable|integer',
-            'service_id' => 'nullable|integer',
-            'branch_id' => 'nullable|integer',
-            'price' => 'nullable|numeric',
-            'discount' => 'nullable|numeric',
-            'expiry_discount_date' => 'nullable|date',
-            'status' => 'nullable|string',
+                'client_id' => 'nullable|integer',
+                'service_id' => 'nullable|integer',
+                'branch_id' => 'nullable|integer',
+                'price' => 'nullable|numeric',
+                'discount' => 'nullable|numeric',
+                'expiry_discount_date' => 'nullable|date',
+                'status' => 'nullable|string',
             ]);
             $booking_service = Booking_Service::create($request->all());
             return response()->json([
@@ -54,8 +55,7 @@ class BookingServiceController extends Controller
                 'message' => 'Booking Service created successfully',
                 'data' => $booking_service,
             ]);
-        }
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => 'Validation error',
@@ -67,7 +67,7 @@ class BookingServiceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         //
         try {
@@ -79,19 +79,19 @@ class BookingServiceController extends Controller
             ]);
 
         } catch (\Throwable $th) {
-            
+
             return response()->json([
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,  $id)
+    public function update(Request $request, $id)
     {
         //
         try {
@@ -124,7 +124,7 @@ class BookingServiceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
         //
         try {
@@ -139,7 +139,7 @@ class BookingServiceController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

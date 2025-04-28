@@ -19,14 +19,15 @@ class ClientController extends Controller
             if ($request->has('name')) {
                 $clients->where('name', 'like', '%' . $request->query('name') . '%');
             }
-            return response()->json($clients->paginate($request->query('limit') ?? 10)
+            return response()->json(
+                $clients->paginate($request->query('limit') ?? 10)
             );
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -38,13 +39,13 @@ class ClientController extends Controller
         //
         try {
             $request->validate([
-            'member_id' => 'nullable|integer',
-            'name' => 'nullable|string|max:255',
-            'email' => 'nullable|email|unique:clients,email',
-            'phone' => 'nullable|string|max:15',
-            'address' => 'nullable|string|max:500',
-            'saldo' => 'nullable|numeric|min:0',
-            'points' => 'nullable|integer|min:0',
+                'member_id' => 'nullable|integer',
+                'name' => 'nullable|string|max:255',
+                'email' => 'nullable|email|unique:clients,email',
+                'phone' => 'nullable|string|max:15',
+                'address' => 'nullable|string|max:500',
+                'saldo' => 'nullable|numeric|min:0',
+                'points' => 'nullable|integer|min:0',
             ]);
             $client = Client::create($request->all());
             return response()->json([
@@ -57,7 +58,7 @@ class ClientController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
 
     }
@@ -85,7 +86,7 @@ class ClientController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -123,14 +124,14 @@ class ClientController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
         //
         try {
@@ -151,7 +152,7 @@ class ClientController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
 
     }

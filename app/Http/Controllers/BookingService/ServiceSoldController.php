@@ -21,7 +21,8 @@ class ServiceSoldController extends Controller
             if ($request->has('service_id')) {
                 $serviceSold->where('service_id', $request->query('service_id'));
             }
-            return response()->json($serviceSold->paginate($request->query('limit') ?? 10)
+            return response()->json(
+                $serviceSold->paginate($request->query('limit') ?? 10)
             );
         } catch (\Throwable $th) {
             //throw $th;
@@ -29,7 +30,7 @@ class ServiceSoldController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -61,7 +62,7 @@ class ServiceSoldController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -92,7 +93,7 @@ class ServiceSoldController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -133,7 +134,7 @@ class ServiceSoldController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -165,7 +166,7 @@ class ServiceSoldController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

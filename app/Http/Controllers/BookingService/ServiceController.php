@@ -20,7 +20,8 @@ class ServiceController extends Controller
             if ($request->has('search')) {
                 $services->where('name', 'like', '%' . $request->search . '%');
             }
-            return response()->json($services->paginate($request->limit ?? 10),
+            return response()->json(
+                $services->paginate($request->limit ?? 10),
             );
         } catch (\Throwable $th) {
             //throw $th;
@@ -28,7 +29,7 @@ class ServiceController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -40,11 +41,11 @@ class ServiceController extends Controller
         //
         try {
             $request->validate([
-                'branch_id'            => 'nullable|integer',
-                'name'                 => 'nullable|string',
-                'description'          => 'nullable|string',
-                'price'                => 'nullable|numeric',
-                'discount'             => 'nullable|numeric',
+                'branch_id' => 'nullable|integer',
+                'name' => 'nullable|string',
+                'description' => 'nullable|string',
+                'price' => 'nullable|numeric',
+                'discount' => 'nullable|numeric',
                 'expiry_discount_date' => 'nullable|date',
             ]);
             $service = Service::create($request->all());
@@ -59,14 +60,14 @@ class ServiceController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         //
         try {
@@ -89,23 +90,23 @@ class ServiceController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,  $id)
+    public function update(Request $request, $id)
     {
         //
         try {
             $request->validate([
-                'branch_id'            => 'nullable|integer',
-                'name'                 => 'nullable|string',
-                'description'          => 'nullable|string',
-                'price'                => 'nullable|numeric',
-                'discount'             => 'nullable|numeric',
+                'branch_id' => 'nullable|integer',
+                'name' => 'nullable|string',
+                'description' => 'nullable|string',
+                'price' => 'nullable|numeric',
+                'discount' => 'nullable|numeric',
                 'expiry_discount_date' => 'nullable|date',
             ]);
             $service = Service::findOrFail($id);
@@ -121,14 +122,14 @@ class ServiceController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
         //
         try {
@@ -144,7 +145,7 @@ class ServiceController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

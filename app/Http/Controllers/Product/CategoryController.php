@@ -19,7 +19,8 @@ class CategoryController extends Controller
             if ($request->has('name')) {
                 $categories->where('name', 'like', '%' . $request->query('name') . '%');
             }
-            return response()->json($categories->paginate($request->query('limit') ?? 10)
+            return response()->json(
+                $categories->paginate($request->query('limit') ?? 10)
             );
         } catch (\Throwable $th) {
             //throw $th;
@@ -27,7 +28,7 @@ class CategoryController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -54,7 +55,7 @@ class CategoryController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -77,7 +78,7 @@ class CategoryController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -105,7 +106,7 @@ class CategoryController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -128,7 +129,7 @@ class CategoryController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

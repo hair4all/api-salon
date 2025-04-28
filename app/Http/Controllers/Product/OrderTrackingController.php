@@ -19,7 +19,8 @@ class OrderTrackingController extends Controller
             if ($request->has('order_id')) {
                 $orderTracking->where('order_id', $request->query('order_id'));
             }
-            return response()->json($orderTracking->paginate($request->query('limit') ?? 10)
+            return response()->json(
+                $orderTracking->paginate($request->query('limit') ?? 10)
             );
         } catch (\Throwable $th) {
             //throw $th;
@@ -27,7 +28,7 @@ class OrderTrackingController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -59,7 +60,7 @@ class OrderTrackingController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -82,7 +83,7 @@ class OrderTrackingController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -115,7 +116,7 @@ class OrderTrackingController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -139,7 +140,7 @@ class OrderTrackingController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

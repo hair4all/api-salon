@@ -19,7 +19,8 @@ class PaymentGatewayResponseController extends Controller
             if ($request->has('payment_id')) {
                 $paymentGatewayResponse->where('payment_id', $request->query('payment_id'));
             }
-            return response()->json($paymentGatewayResponse->paginate($request->query('limit') ?? 10)
+            return response()->json(
+                $paymentGatewayResponse->paginate($request->query('limit') ?? 10)
             );
         } catch (\Throwable $th) {
             //throw $th;
@@ -27,7 +28,7 @@ class PaymentGatewayResponseController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -56,7 +57,7 @@ class PaymentGatewayResponseController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -85,7 +86,7 @@ class PaymentGatewayResponseController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -121,7 +122,7 @@ class PaymentGatewayResponseController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -151,7 +152,7 @@ class PaymentGatewayResponseController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

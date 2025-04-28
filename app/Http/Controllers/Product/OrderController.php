@@ -19,7 +19,8 @@ class OrderController extends Controller
             if ($request->has('customer_id')) {
                 $orders->where('customer_id', $request->query('customer_id'));
             }
-            return response()->json( $orders->paginate($request->query('limit') ?? 10)
+            return response()->json(
+                $orders->paginate($request->query('limit') ?? 10)
             );
         } catch (\Throwable $th) {
             //throw $th;
@@ -27,7 +28,7 @@ class OrderController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -63,7 +64,7 @@ class OrderController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -86,7 +87,7 @@ class OrderController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -123,7 +124,7 @@ class OrderController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -146,7 +147,7 @@ class OrderController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

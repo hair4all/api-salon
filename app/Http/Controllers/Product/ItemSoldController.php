@@ -19,7 +19,8 @@ class ItemSoldController extends Controller
             if ($request->has('product_id')) {
                 $itemSold->where('product_id', $request->query('product_id'));
             }
-            return response()->json($itemSold->paginate($request->query('limit') ?? 10)
+            return response()->json(
+                $itemSold->paginate($request->query('limit') ?? 10)
             );
         } catch (\Throwable $th) {
             //throw $th;
@@ -27,7 +28,7 @@ class ItemSoldController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -56,7 +57,7 @@ class ItemSoldController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -85,7 +86,7 @@ class ItemSoldController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -121,7 +122,7 @@ class ItemSoldController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -151,7 +152,7 @@ class ItemSoldController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

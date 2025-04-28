@@ -19,7 +19,8 @@ class TransactionController extends Controller
             if ($request->has('client_id')) {
                 $transactions->where('client_id', $request->query('client_id'));
             }
-            return response()->json( $transactions->paginate($request->query('limit') ?? 10)
+            return response()->json(
+                $transactions->paginate($request->query('limit') ?? 10)
             );
         } catch (\Throwable $th) {
             //throw $th;
@@ -27,7 +28,7 @@ class TransactionController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -57,7 +58,7 @@ class TransactionController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -87,7 +88,7 @@ class TransactionController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -118,7 +119,7 @@ class TransactionController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -141,7 +142,7 @@ class TransactionController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

@@ -44,7 +44,8 @@ class BookingController extends Controller
             if ($request->has('status')) {
                 $bookings->where('status', $request->query('status'));
             }
-            return response()->json($bookings->paginate($request->limit ?? 10),
+            return response()->json(
+                $bookings->paginate($request->limit ?? 10),
             );
 
         } catch (\Throwable $th) {
@@ -53,7 +54,7 @@ class BookingController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -95,7 +96,7 @@ class BookingController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -130,7 +131,7 @@ class BookingController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -178,7 +179,7 @@ class BookingController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -214,7 +215,7 @@ class BookingController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

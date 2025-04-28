@@ -19,7 +19,8 @@ class InventoryController extends Controller
             if ($request->has('name')) {
                 $inventories->where('name', 'like', '%' . $request->query('name') . '%');
             }
-            return response()->json($inventories->paginate($request->query('limit') ?? 10)
+            return response()->json(
+                $inventories->paginate($request->query('limit') ?? 10)
             );
         } catch (\Throwable $th) {
             //throw $th;
@@ -27,7 +28,7 @@ class InventoryController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -43,8 +44,8 @@ class InventoryController extends Controller
                 'image' => 'nullable|file',
                 'description' => 'nullable|string',
                 'quantity' => 'required|integer',
-                'branch_id' => 'required|integer',
-                'category_id' => 'required|integer',
+                'branch_id' => 'nullable|integer',
+                'category_id' => 'nullable|integer',
                 'price' => 'required|numeric',
                 'stock' => 'required|integer',
             ]);
@@ -67,7 +68,7 @@ class InventoryController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 400);
         }
     }
 
@@ -97,7 +98,7 @@ class InventoryController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 400);
         }
     }
 
@@ -145,7 +146,7 @@ class InventoryController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 400);
         }
     }
 
@@ -168,7 +169,7 @@ class InventoryController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 400);
         }
     }
 }

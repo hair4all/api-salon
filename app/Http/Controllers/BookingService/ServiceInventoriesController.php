@@ -20,7 +20,8 @@ class ServiceInventoriesController extends Controller
             if ($request->has('service_id')) {
                 $serviceInventories->where('service_id', $request->query('service_id'));
             }
-            return response()->json( $serviceInventories->paginate($request->query('limit') ?? 10)
+            return response()->json(
+                $serviceInventories->paginate($request->query('limit') ?? 10)
             );
         } catch (\Throwable $th) {
             //throw $th;
@@ -28,7 +29,7 @@ class ServiceInventoriesController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -56,7 +57,7 @@ class ServiceInventoriesController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -86,7 +87,7 @@ class ServiceInventoriesController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -122,7 +123,7 @@ class ServiceInventoriesController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -152,7 +153,7 @@ class ServiceInventoriesController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

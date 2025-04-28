@@ -19,7 +19,8 @@ class TopupHistoryController extends Controller
             if ($request->has('client_id')) {
                 $topupHistory->where('client_id', $request->query('client_id'));
             }
-            return response()->json($topupHistory->paginate($request->query('limit') ?? 10)
+            return response()->json(
+                $topupHistory->paginate($request->query('limit') ?? 10)
             );
         } catch (\Throwable $th) {
             //throw $th;
@@ -27,7 +28,7 @@ class TopupHistoryController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -57,7 +58,7 @@ class TopupHistoryController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -86,7 +87,7 @@ class TopupHistoryController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -117,7 +118,7 @@ class TopupHistoryController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -141,7 +142,7 @@ class TopupHistoryController extends Controller
                 'status' => false,
                 'message' => 'Something went wrong',
                 'data' => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }
