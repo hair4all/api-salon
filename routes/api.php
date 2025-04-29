@@ -11,6 +11,6 @@ Route::prefix('v0')->group(function () {
     Route::get('health', function () {
         return response()->json(['status' => 'ok']);
     });
-    require __DIR__ . '/api/v0/index.php';
+    require __DIR__ . '/api/v1/index.php';
 
 });
