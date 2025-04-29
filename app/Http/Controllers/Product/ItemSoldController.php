@@ -42,7 +42,7 @@ class ItemSoldController extends Controller
             $request->validate([
                 'inventory_id' => 'nullable|integer',
                 'quantity' => 'nullable|integer',
-                'price' => 'nullable|numeric',
+                // 'price' => 'nullable|numeric',
                 'sold_date' => 'nullable|date',
             ]);
             $itemSold = Item_Sold::create($request->all());
@@ -100,7 +100,7 @@ class ItemSoldController extends Controller
             $request->validate([
                 'inventory_id' => 'nullable|integer',
                 'quantity' => 'nullable|integer',
-                'price' => 'nullable|numeric',
+                // 'price' => 'nullable|numeric',
                 'sold_date' => 'nullable|date',
             ]);
             $itemSold = Item_Sold::query()->where('is_deleted', 0)->find($id);
