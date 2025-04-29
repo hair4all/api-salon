@@ -108,7 +108,9 @@ class InventoryController extends Controller
     public function update(Request $request, $id)
     {
         //
+        // dd("AAAAAAAAAAAAA");
         try {
+            // dd($request->file('image'));
             $request->validate([
                 'name' => 'nullable|string',
                 'image' => 'nullable|file',
