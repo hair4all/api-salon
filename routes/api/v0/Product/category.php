@@ -14,8 +14,8 @@ use App\Http\Controllers\Product\CategoryController;
 // });
 Route::resource('categories', CategoryController::class)->names([
     'index' => 'categories.index',
-    'show' => 'categories.show',
+    // 'show' => 'categories.show',
     'store' => 'categories.store',
-    'update' => 'categories.update',
+    'edit' => 'categories.update',
     'destroy' => 'categories.destroy',
 ]);

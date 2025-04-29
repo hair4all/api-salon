@@ -17,6 +17,6 @@ Route::resource('inventories', InventoryController::class)->names([
     'index' => 'inventories.index',
     'show' => 'inventories.show',
     'store' => 'inventories.store',
-    'update' => 'inventories.update',
+    'edit' => 'inventories.update',
     'destroy' => 'inventories.destroy',
 ]);

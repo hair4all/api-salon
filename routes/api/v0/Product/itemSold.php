@@ -12,7 +12,7 @@ use App\Http\Controllers\Product\ItemSoldController;
 //     Route::put('/itemsold/edit/{id}', [ItemSoldController::class, 'update']);
 //     Route::delete('/itemsold/delete/{id}', [ItemSoldController::class, 'destroy']);
 // });
-Route::resource('itemsold', ItemSoldController::class)->names([
+Route::resource('item-sold', ItemSoldController::class)->names([
     'index' => 'itemsold.index',
     'show' => 'itemsold.show',
     'store' => 'itemsold.store',
