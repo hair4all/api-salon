@@ -68,6 +68,21 @@ class WorkerController extends Controller
     public function show($id)
     {
         //
+
+        try {
+            $worker = Worker::query()->where('is_deleted', 0)->findOrFail($id);
+            return response()->json([
+                'status' => true,
+                'message' => 'Worker retrieved successfully',
+                'data' => $worker,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -76,6 +91,33 @@ class WorkerController extends Controller
     public function update(Request $request, $id)
     {
         //
+
+        try {
+            $request->validate([
+                'member_id' => 'nullable|integer',
+                'branch_id' => 'nullable|integer',
+                'name' => 'nullable|string|max:255',
+                'phone' => 'nullable|string|max:15',
+                'email' => 'nullable|email|max:255|unique:workers,email,' . $id,
+                'address' => 'nullable|string|max:500',
+                'position_id' => 'nullable|integer',
+                'status' => 'nullable|boolean',
+                'salary' => 'nullable|numeric|min:0',
+            ]);
+            $worker = Worker::findOrFail($id);
+            $worker->update($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Worker updated successfully',
+                'data' => $worker,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -84,5 +126,20 @@ class WorkerController extends Controller
     public function destroy($id)
     {
         //
+
+        try {
+            $worker = Worker::findOrFail($id);
+            $worker->update(['is_deleted' => 1]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Worker deleted successfully',
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ], 500);
+        }
     }
 }

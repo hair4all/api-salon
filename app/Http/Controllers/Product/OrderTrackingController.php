@@ -104,6 +104,12 @@ class OrderTrackingController extends Controller
                 'estimated_delivery_date' => 'nullable|date',
                 'is_deleted' => 'nullable|boolean',
             ]);
+            // if(!$orderTracking){
+            //     return response()->json([
+            //         'status' => false,
+            //         'message' => 'Order Tracking not found',
+            //     ], 404);
+            // }
             $orderTracking->update($request->all());
             return response()->json([
                 'status' => true,

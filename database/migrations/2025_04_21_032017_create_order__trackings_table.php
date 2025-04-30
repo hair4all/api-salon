@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('order__trackings', function (Blueprint $table) {
             $table->id();
-            $table->string('order_id')->unique();
+            $table->string('order_id')->unique()->nullable();
             $table->foreign('order_id')->references('id')->on('orders')->nullOnDelete()->cascadeOnUpdate();
-            $table->string('tracking_number')->unique();
+            $table->string('tracking_number')->unique()->nullable();
             $table->string('courier')->nullable();
             $table->string('status')->nullable();
             $table->string('shipping_address')->nullable();
