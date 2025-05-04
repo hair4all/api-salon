@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->foreign('branch_id')->references('id')->on('branches')->nullOnDelete()->cascadeOnUpdate();
             $table->integer('discount')->nullable();
             $table->date('expiry_discount_date')->nullable();
+            $table->integer('points')->nullable();
             $table->string('status')->nullable();
             $table->boolean('is_deleted')->default(false);
             $table->timestamps();

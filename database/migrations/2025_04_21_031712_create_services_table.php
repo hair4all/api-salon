@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->string('description')->nullable();
             $table->decimal('price')->nullable();
             $table->integer('discount')->nullable();
+            $table->integer('points')->nullable();
             $table->date('expiry_discount_date')->nullable();
             $table->boolean('is_deleted')->default(false);
             // $table->decimal('discounted_price')->nullable();
