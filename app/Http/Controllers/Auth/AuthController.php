@@ -7,6 +7,7 @@ use App\Models\Branch;
 use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 use App\Models\Member;
 use App\Models\Worker;
@@ -203,8 +204,7 @@ class AuthController extends Controller{
                     // If not, create a new member
                     $member = new Member();
                     $member->email    = $email;
-                    $member->name     = $payload['name'];
-                    $member->password = Hash::make(str_random(16)); // Generate a random password
+                    $member->password = Hash::make(Str::random(16)); // Generate a random password
                     $member->save();
                 }
                 // Check if the client already exists
