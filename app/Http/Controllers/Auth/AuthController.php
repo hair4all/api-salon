@@ -53,7 +53,7 @@ trait AuthClientTrait{
     {
         try {
             $request->validate([
-                'email'          => 'required|email|unique:members,email',
+                'email'          => 'required|email|unique:clients,email',
                 'user'           => 'array',
                 'user.username'  => 'nullable|string|max:255',
                 'user.password'  => 'required|string|min:8|confirmed',
@@ -63,20 +63,21 @@ trait AuthClientTrait{
                 'client.address' => 'nullable',
             ]);
 
-            
+            $data  = $this->handleRequest($request);
 
+            // Use the $data array from handleRequest()
             $user = new Member();
-            $user->username     = $request->user['username'];
-            $user->email    = $request->email;
-            $user->password = Hash::make($request->user['password']);
+            $user->username = $data['user']['username'];
+            $user->email    = $data['email'];
+            $user->password = Hash::make($data['user']['password']);
             $user->save();
 
             $client = new Client();
             $client->member_id = $user->id;
-            $client->name      = $request->client['name'];
-            $client->email     = $request->email;
-            $client->phone     = $request->client['phone'];
-            $client->address   = $request->client['address'];
+            $client->name      = $data['client']['name'];
+            $client->email     = $data['email'];
+            $client->phone     = $data['client']['phone'] ?? null;
+            $client->address   = $data['client']['address'] ?? null;
             $client->saldo     = 0;
             $client->points    = 0;
             $client->is_deleted= 0;
@@ -115,7 +116,7 @@ trait AuthWorkerTrait{
             if (!$worker) {
                 return response()->json(['message' => 'Invalid credentials'], 401);
             }
-            
+
             $member = Member::where('id','=', $worker->member_id)->where('is_deleted','=',0)->first();
 
             if (!$member || !Hash::check($request->password, $member->password)) {
@@ -137,51 +138,65 @@ trait AuthWorkerTrait{
     public function workerRegister(Request $request){
         try {
             $request->validate([
-                'email'          => 'required|email',
-                'user'           => '*.array',
+                'email'          => 'required|email,unique:workers,email',
+                'user'           => 'array',
                 'user.username'  => 'nullable|string|max:255',
                 'user.password'  => 'required|string|min:8|confirmed',
-                'worker'         => '*.array',
+                'worker'         => 'array',
                 'worker.name'    => 'required|string|max:255',
                 'worker.phone'   => 'nullable',
                 'worker.branch_id' => 'required|integer',
                 'worker.position_id' => 'required|integer',
-                'worker.salary' => 'required|numeric',
-                'worker.status' => 'required|integer',
+                'worker.salary' => 'nullable|numeric',
+                'worker.status' => 'nullable|integer',
                 'worker.address' => 'nullable',
             ]);
 
+            $data = $this->handleRequest($request);
             // Check if branch_id and position_id exist in the database
-            $branchExists = Branch::where('id', $request->worker['branch_id'])->exists();
-            $positionExists = Position::where('id', $request->worker['position_id'])->exists();
+            $branchExists = Branch::where('id', $data['worker']['branch_id'])->exists();
+            $positionExists = Position::where('id', $data['worker']['position_id'])->exists();
 
             // If not exists, set into null
             if (!$branchExists || !$positionExists) {
                 if (!$branchExists) {
-                    $request->worker['branch_id'] = null;
+                    $data['worker']['branch_id'] = null;
                 }
                 if (!$positionExists) {
-                    $request->worker['position_id'] = null;
+                    $data['worker']['position_id'] = null;
                 }
             }
 
+
+            // Use the $data array from handleRequest()
             $user = new Member();
-            $user->name     = $request->user['name'];
-            $user->email    = $request->email;
-            $user->password = Hash::make($request->user['password']);
+            $user->username = $data['user']['username'];
+            $user->email    = $data['email'];
+            $user->password = Hash::make($data['user']['password']);
             $user->save();
 
             $worker = new Worker();
             $worker->member_id = $user->id;
-            $worker->name      = $request->worker['name'];
-            $worker->email     = $request->email;
-            $worker->phone     = $request->worker['phone'];
-            $worker->address   = $request->worker['address'];
+            $worker->branch_id = $data['worker']['branch_id'];
+            $worker->position_id = $data['worker']['position_id'];
+            $worker->name      = $data['worker']['name'];
+            $worker->email     = $data['email'];
+            $worker->phone     = $data['worker']['phone'] ?? null;
+            $worker->address   = $data['worker']['address'] ?? null;
+            $worker->salary    = $data['worker']['salary'] ?? null;
+            $worker->status    = $data['worker']['status'] ?? 0;
             $worker->is_deleted= 0;
             $worker->save();
 
+
+
             return response()->json([
-                'message' => 'Worker registered successfully'
+                'message' => 'Worker registered successfully',
+                'payload' => [
+                    'worker_id' => $worker->id,
+                    'email'     => $worker->email,
+                    'name'      => $worker->name,
+                ]
             ], 201);
         } catch (\Exception $e) {
             return response()->json([

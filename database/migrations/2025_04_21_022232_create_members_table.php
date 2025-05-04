@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('members', function (Blueprint $table) {
             $table->id();
             $table->string('username')->unique();
-            $table->string('email')->unique();
+            $table->string('email');
             $table->string('password');
             $table->string('pin')->nullable();
             $table->boolean('is_deleted')->default(false);
