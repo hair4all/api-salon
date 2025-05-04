@@ -26,8 +26,12 @@ trait AuthClientTrait{
 
             $client = Client::where('email', '=',$request->email)
             ->where('is_deleted','=',0)->first();
-            $member = Member::where('email','=', $request->email)
-            ->where('is_deleted','=',0)->first();
+
+            if (!$client) {
+                return response()->json(['message' => 'Invalid credentials'], 401);
+            }
+
+            $member = Member::where('id','=', $client->member_id)->where('is_deleted','=',0)->first();
 
             if (!$member || !Hash::check($request->password, $member->password)) {
                 return response()->json(['message' => 'Invalid credentials'], 401);
@@ -107,8 +111,12 @@ trait AuthWorkerTrait{
             ]);
 
             $worker = Worker::where('email','=',$request->email)->where('is_deleted','=',0)->first();
-
-            $member = Member::where('id','=', $request->email)->where('is_deleted','=',0)->first();
+            
+            if (!$worker) {
+                return response()->json(['message' => 'Invalid credentials'], 401);
+            }
+            
+            $member = Member::where('id','=', $worker->member_id)->where('is_deleted','=',0)->first();
 
             if (!$member || !Hash::check($request->password, $member->password)) {
                 return response()->json(['message' => 'Invalid credentials'], 401);
@@ -129,7 +137,7 @@ trait AuthWorkerTrait{
     public function workerRegister(Request $request){
         try {
             $request->validate([
-                'email'          => 'required|email|unique:members,email',
+                'email'          => 'required|email',
                 'user'           => '*.array',
                 'user.username'  => 'nullable|string|max:255',
                 'user.password'  => 'required|string|min:8|confirmed',
