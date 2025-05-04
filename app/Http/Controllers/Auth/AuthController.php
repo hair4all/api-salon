@@ -59,6 +59,8 @@ trait AuthClientTrait{
                 'client.address' => 'nullable',
             ]);
 
+            
+
             $user = new Member();
             $user->name     = $request->user['name'];
             $user->email    = $request->user['email'];

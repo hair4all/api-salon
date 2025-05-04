@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\Member;
+use Hash;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -39,8 +40,11 @@ class MemberController extends Controller
             $request->validate([
                 'username' => 'nullable|string|max:255',
                 'email' => 'nullable|string|email|max:255|unique:members,email',
-                'password' => 'nullable|string|min:8',
+                'password' => 'nullable|string',
             ]);
+
+            $member['password'] = Hash::make($request->password);
+
             $member = Member::create($request->all());
             return response()->json([
                 'status' => true,
@@ -88,8 +92,13 @@ class MemberController extends Controller
             $request->validate([
                 'username' => 'nullable|string|max:255',
                 'email' => 'nullable|string|email|max:255|unique:members,email,' . $id,
-                'password' => 'nullable|string|min:8',
+                'password' => 'nullable|string',
             ]);
+            
+            if ($request->has('password')) {
+                $request['password'] = Hash::make($request->password);
+            }
+
             $member = Member::findOrFail($id);
             $member->update($request->all());
             return response()->json([
