@@ -49,12 +49,12 @@ trait AuthClientTrait{
     {
         try {
             $request->validate([
-                'user'           => '*.array',
-                'user.email'     => 'required|email|unique:clients,email',
+                'email'          => 'required|email|unique:members,email',
+                'user'           => 'array',
+                'user.username'  => 'nullable|string|max:255',
                 'user.password'  => 'required|string|min:8|confirmed',
-                'client'         => '*.array',
+                'client'         => 'array',
                 'client.name'    => 'required|string|max:255',
-                'client.email'   => 'required',
                 'client.phone'   => 'nullable',
                 'client.address' => 'nullable',
             ]);
@@ -62,15 +62,15 @@ trait AuthClientTrait{
             
 
             $user = new Member();
-            $user->name     = $request->user['name'];
-            $user->email    = $request->user['email'];
+            $user->username     = $request->user['username'];
+            $user->email    = $request->email;
             $user->password = Hash::make($request->user['password']);
             $user->save();
 
             $client = new Client();
             $client->member_id = $user->id;
             $client->name      = $request->client['name'];
-            $client->email     = $request->client['email'];
+            $client->email     = $request->email;
             $client->phone     = $request->client['phone'];
             $client->address   = $request->client['address'];
             $client->saldo     = 0;
@@ -129,12 +129,12 @@ trait AuthWorkerTrait{
     public function workerRegister(Request $request){
         try {
             $request->validate([
+                'email'          => 'required|email|unique:members,email',
                 'user'           => '*.array',
-                'user.email'     => 'required|email|unique:workers,email',
+                'user.username'  => 'nullable|string|max:255',
                 'user.password'  => 'required|string|min:8|confirmed',
                 'worker'         => '*.array',
                 'worker.name'    => 'required|string|max:255',
-                'worker.email'   => 'required',
                 'worker.phone'   => 'nullable',
                 'worker.branch_id' => 'required|integer',
                 'worker.position_id' => 'required|integer',
@@ -159,14 +159,14 @@ trait AuthWorkerTrait{
 
             $user = new Member();
             $user->name     = $request->user['name'];
-            $user->email    = $request->user['email'];
+            $user->email    = $request->email;
             $user->password = Hash::make($request->user['password']);
             $user->save();
 
             $worker = new Worker();
             $worker->member_id = $user->id;
             $worker->name      = $request->worker['name'];
-            $worker->email     = $request->worker['email'];
+            $worker->email     = $request->email;
             $worker->phone     = $request->worker['phone'];
             $worker->address   = $request->worker['address'];
             $worker->is_deleted= 0;
