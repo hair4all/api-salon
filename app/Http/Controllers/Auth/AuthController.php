@@ -16,7 +16,7 @@ use App\Helpers\JwtHelper;
 
 trait AuthClientTrait{
 
-    public function login(Request $request)
+    public function clientLogin(Request $request)
     {
         try {
             $request->validate([
@@ -45,7 +45,7 @@ trait AuthClientTrait{
         }
     }
 
-    public function register(Request $request)
+    public function clientRegister(Request $request)
     {
         try {
             $request->validate([
@@ -96,7 +96,7 @@ trait AuthClientTrait{
 }
 
 trait AuthWorkerTrait{
-    public function login(Request $request)
+    public function workerLogin(Request $request)
     {
         try {
             $request->validate([
@@ -124,7 +124,7 @@ trait AuthWorkerTrait{
         }
     }
 
-    public function register(Request $request){
+    public function workerRegister(Request $request){
         try {
             $request->validate([
                 'user'           => '*.array',
