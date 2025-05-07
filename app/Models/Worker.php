@@ -10,7 +10,7 @@ class Worker extends Model
     protected $table = 'workers';
     protected $fillable = [
         'id',
-        'member_id',
+        // 'member_id',
         'branch_id',
         'name',
         'phone',

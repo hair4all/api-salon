@@ -9,7 +9,7 @@ class Client extends Model
     //
     protected $table = 'clients';
     protected $fillable = [
-        'member_id',
+        // 'member_id',
         'name',
         'email',
         'phone',

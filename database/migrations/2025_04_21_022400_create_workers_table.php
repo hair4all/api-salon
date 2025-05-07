@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('workers', function (Blueprint $table) {
             $table->id();
-            $table->string('member_id')->nullable();
-            $table->foreign('member_id')->references('id')->on('members')->nullOnDelete()->cascadeOnUpdate();
+            // $table->string('member_id')->nullable();
+            // $table->foreign('member_id')->references('id')->on('members')->nullOnDelete()->cascadeOnUpdate();
             $table->string('branch_id')->nullable();
             $table->foreign('branch_id')->references('id')->on('branches')->nullOnDelete()->cascadeOnUpdate();
             $table->string('name')->nullable();
