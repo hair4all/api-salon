@@ -14,7 +14,7 @@ class RajaOngkirController extends Controller{
     
     public function getDestination(Request $request){
         try {
-            $response = Http::get($this->url . 'api/v1/destination/', [
+            $response = Http::get($this->url . 'tariff/api/v1/destination/', [
                 
                 'keyword' => $request->query('province'),
             ])->withHeader(
@@ -46,7 +46,7 @@ class RajaOngkirController extends Controller{
 
     public function getHistoryAirwayBill(Request $request){
         try {
-            $response = Http::get($this->url . 'api/v1/orders/history-airway-bill', [
+            $response = Http::get($this->url . 'tariff/api/v1/orders/history-airway-bill', [
                 'shipping'=> $request->query('shipping'),
                 'airway_bill' => $request->query('airway_bill'),
             ])->withHeader(
@@ -78,7 +78,7 @@ class RajaOngkirController extends Controller{
 
     public function getOrderDetail(Request $request){
         try {
-            $response = Http::get($this->url . 'api/v1/orders/detail', [
+            $response = Http::get($this->url . 'tariff/api/v1/orders/detail', [
                 'order_no'=> $request->query('order_no'),
             ])->withHeader(
                 'X-Api-Key', $this->key
@@ -109,7 +109,7 @@ class RajaOngkirController extends Controller{
 
     public function getShippingCost(Request $request){
         try {
-            $response = Http::get($this->url . 'api/v1/shipping-cost', [
+            $response = Http::get($this->url . 'tariff/api/v1/shipping-cost', [
                 'shipper_destination_id'=> $request->query('shipper_destination_id'),
                 'receiver_destination_id' => $request->query('receiver_destination_id'),
                 'weight' => $request->query('weight'),
@@ -177,7 +177,7 @@ class RajaOngkirController extends Controller{
                 'order_details.*.subtotal'              => 'required|numeric|min:0',
             ]);
 
-            $response = Http::post($this->url . 'api/v1/orders/store', [
+            $response = Http::post($this->url . 'order/api/v1/orders/store', [
             'brand_name'              => $request->input('brand_name'),
             'shipper_name'            => $request->input('shipper_name'),
             'shipper_phone'           => $request->input('shipper_phone'),
@@ -234,7 +234,7 @@ class RajaOngkirController extends Controller{
                 'orders.*.order_no' => 'required|string|max:255',
             ]);
 
-            $response = Http::post($this->url . 'api/v1/pickup/request', [
+            $response = Http::post($this->url . 'order/api/v1/pickup/request', [
                 'pickup_date'    => $request->input('pickup_date'),
                 'pickup_time'    => $request->input('pickup_time'),
                 'pickup_vehicle' => $request->input('pickup_vehicle'),
@@ -273,7 +273,7 @@ class RajaOngkirController extends Controller{
                 'page' => 'nullable|string',
             ]);
 
-            $url = $this->url . 'api/v1/orders/print-label';
+            $url = $this->url . 'order/api/v1/orders/print-label';
             if ($request->input('order_no')) {
                 $url .= '?order_no=' . $request->input('order_no');
             }
@@ -284,6 +284,41 @@ class RajaOngkirController extends Controller{
                 'X-Api-Key', $this->key
             );
             
+            $response = json_decode($response->body(), true);
+            if ($response['status'] == 200) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Success',
+                    'data' => $response['data'],
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Failed',
+                    'data' => $response['message'],
+                ]);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function CancelOrder(Request $request){
+        try {
+            $request->validate([
+                'order_no' => 'required|string|max:255',
+            ]);
+
+            $response = Http::put($this->url . 'order/api/v1/orders/cancel', [
+                'order_no' => $request->input('order_no'),
+            ])->withHeader(
+                'X-Api-Key', $this->key
+            );
             $response = json_decode($response->body(), true);
             if ($response['status'] == 200) {
                 return response()->json([
