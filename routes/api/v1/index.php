@@ -23,3 +23,6 @@ require __DIR__ . '/Payment/index.php';
 require __DIR__ . '/BookingService/index.php';
 require __DIR__ . '/User/index.php';
 
+// Include the routes for RajaOngkir Callback
+require __DIR__ . '/RajaOngkirCallback/index.php';
+

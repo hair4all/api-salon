@@ -17,8 +17,10 @@ return new class extends Migration
             // $table->foreign('member_id')->references('id')->on('members')->nullOnDelete()->cascadeOnUpdate();
             $table->string('branch_id')->nullable();
             $table->foreign('branch_id')->references('id')->on('branches')->nullOnDelete()->cascadeOnUpdate();
-            $table->string('name')->nullable();
+            $table->string('username')->nullable();
             $table->string('phone')->nullable();
+            $table->string('password')->nullable();
+            $table->string('name')->nullable();
             $table->string('email')->nullable();
             $table->string('address')->nullable();
             $table->string('position_id')->nullable();

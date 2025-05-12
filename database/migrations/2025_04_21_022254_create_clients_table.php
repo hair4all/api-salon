@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             // $table->string('member_id')->nullable();
             // $table->foreign('member_id')->references('id')->on('members')->nullOnDelete()->cascadeOnUpdate();
+            $table->string('phone')->unique();
+            $table->string('password')->unique();
             $table->string('name')->nullable();
-            $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->string('address')->nullable();
             $table->decimal('saldo')->nullable();

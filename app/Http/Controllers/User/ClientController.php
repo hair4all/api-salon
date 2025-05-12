@@ -5,7 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Models\Client;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Hash;
 class ClientController extends Controller
 {
     /**
@@ -43,10 +43,12 @@ class ClientController extends Controller
                 'name' => 'nullable|string|max:255',
                 'email' => 'nullable|email|unique:clients,email',
                 'phone' => 'nullable|string|max:15',
+                'password' => 'nullable|string',
                 'address' => 'nullable|string|max:500',
                 'saldo' => 'nullable|numeric|min:0',
                 'points' => 'nullable|integer|min:0',
             ]);
+
             $client = Client::create($request->all());
             return response()->json([
                 'status' => true,

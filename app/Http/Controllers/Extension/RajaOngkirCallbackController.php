@@ -1,37 +1,55 @@
 <?php
 
-namespace App\Extension;
+namespace App\Http\Controllers\Extension;
 
 use App\Models\Client;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
 
-class RajaOngkirController extends Controller{
+class RajaOngkirCallbackController extends Controller{
 
-    private $url = env('RAJA_ONGKIR_URL','https://api-sandbox.collaborator.komerce.id/');
-    private $key = env('RAJA_ONGKIR_KEY','CBhUvjAne0dd4812baa711285pfaOpyN');
+    // private $url = env('RAJA_ONGKIR_URL','https://api-sandbox.collaborator.komerce.id/');
+    // private $key = env('RAJA_ONGKIR_KEY','CBhUvjAne0dd4812baa711285pfaOpyN');
+    private $url;
+    private $key;
     
+    public function __construct(){
+        $this->url = env('RAJA_ONGKIR_URL','https://api-sandbox.collaborator.komerce.id/');
+        $this->key = env('RAJA_ONGKIR_KEY','CBhUvjAne0dd4812baa711285pfaOpyN');
+    }
+
+
     public function getDestination(Request $request){
         try {
-            $response = Http::get($this->url . 'tariff/api/v1/destination/', [
+            if(!$request->query('search')){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'search query is required',
+                    'data' => null,
+                ], 400);
+            }
+            // dd($request->query('search'),$this->url . 'tariff/api/v1/destination/',$this->key);
+            $response = Http::withHeader(
+                'x-api-key', $this->key
+            )->get($this->url . 'tariff/api/v1/destination/search', [
                 
-                'keyword' => $request->query('province'),
-            ])->withHeader(
-                'X-Api-Key', $this->key
-            );
-            $response = json_decode($response->body(), true);
-            if ($response['status'] == 200) {
+                'keyword' => $request->query('search'),
+            ]);
+            // dd($response);
+            if ($response->successful()) {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => true,
                     'message' => 'Success',
                     'data' => $response['data'],
                 ]);
             } else {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => false,
                     'message' => 'Failed',
-                    'data' => $response['message'],
+                    'data' =>$response,
                 ]);
             }
         } catch (\Throwable $th) {
@@ -46,24 +64,33 @@ class RajaOngkirController extends Controller{
 
     public function getHistoryAirwayBill(Request $request){
         try {
-            $response = Http::get($this->url . 'tariff/api/v1/orders/history-airway-bill', [
+            if(!$request->query('shipping') || !$request->query('airway_bill')){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'shipping and airway_bill query is required',
+                    'data' => null,
+                ], 400);
+            }
+            $response = Http::withHeader(
+                'x-api-key', $this->key
+            )->get($this->url . 'order/api/v1/orders/history-airway-bill', [
                 'shipping'=> $request->query('shipping'),
                 'airway_bill' => $request->query('airway_bill'),
-            ])->withHeader(
-                'X-Api-Key', $this->key
-            );
-            $response = json_decode($response->body(), true);
-            if ($response['status'] == 200) {
+            ]);
+            // dd($response);
+            if ($response->successful()) {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => true,
                     'message' => 'Success',
                     'data' => $response['data'],
                 ]);
             } else {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => false,
                     'message' => 'Failed',
-                    'data' => $response['message'],
+                    'data' =>$response,
                 ]);
             }
         } catch (\Throwable $th) {
@@ -78,23 +105,31 @@ class RajaOngkirController extends Controller{
 
     public function getOrderDetail(Request $request){
         try {
-            $response = Http::get($this->url . 'tariff/api/v1/orders/detail', [
+            if(!$request->query('order_no')){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'order_no query is required',
+                    'data' => null,
+                ], 400);
+            }
+            $response = Http::withHeader(
+                'x-api-key', $this->key
+            )->get($this->url . 'order/api/v1/orders/detail', [
                 'order_no'=> $request->query('order_no'),
-            ])->withHeader(
-                'X-Api-Key', $this->key
-            );
-            $response = json_decode($response->body(), true);
-            if ($response['status'] == 200) {
+            ]);
+            if ($response->successful()) {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => true,
                     'message' => 'Success',
                     'data' => $response['data'],
                 ]);
             } else {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => false,
                     'message' => 'Failed',
-                    'data' => $response['message'],
+                    'data' =>$response,
                 ]);
             }
         } catch (\Throwable $th) {
@@ -109,26 +144,34 @@ class RajaOngkirController extends Controller{
 
     public function getShippingCost(Request $request){
         try {
-            $response = Http::get($this->url . 'tariff/api/v1/shipping-cost', [
+            if(!$request->query('shipper_destination_id') || !$request->query('receiver_destination_id') || !$request->query('weight') || !$request->query('item_value')){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'shipper_destination_id, receiver_destination_id, weight and item_value query is required',
+                    'data' => null,
+                ], 400);
+            }
+            $response = Http::withHeader(
+                'x-api-key', $this->key
+            )->get($this->url . 'tariff/api/v1/calculate', [
                 'shipper_destination_id'=> $request->query('shipper_destination_id'),
                 'receiver_destination_id' => $request->query('receiver_destination_id'),
                 'weight' => $request->query('weight'),
                 'item_value' => $request->query('item_value'),
-            ])->withHeader(
-                'X-Api-Key', $this->key
-            );
-            $response = json_decode($response->body(), true);
-            if ($response['status'] == 200) {
+            ]);
+            if ($response->successful()) {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => true,
                     'message' => 'Success',
                     'data' => $response['data'],
                 ]);
             } else {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => false,
                     'message' => 'Failed',
-                    'data' => $response['message'],
+                    'data' =>$response,
                 ]);
             }
         } catch (\Throwable $th) {
@@ -144,7 +187,7 @@ class RajaOngkirController extends Controller{
     public function storeOrder(Request $request){
         try {
             $request->validate([
-                'order_date'               => 'required|date_format:Y-m-d H:i:s',
+                'order_date'               => 'required',
                 'brand_name'               => 'required|string|max:255',
                 'shipper_name'             => 'required|string|max:255',
                 'shipper_phone'            => 'required|string|max:15',
@@ -177,42 +220,25 @@ class RajaOngkirController extends Controller{
                 'order_details.*.subtotal'              => 'required|numeric|min:0',
             ]);
 
-            $response = Http::post($this->url . 'order/api/v1/orders/store', [
-            'brand_name'              => $request->input('brand_name'),
-            'shipper_name'            => $request->input('shipper_name'),
-            'shipper_phone'           => $request->input('shipper_phone'),
-            'shipper_address'         => $request->input('shipper_address'),
-            'shipper_email'           => $request->input('shipper_email'),
-            'receiver_name'           => $request->input('receiver_name'),
-            'receiver_phone'          => $request->input('receiver_phone'),
-            'receiver_address'        => $request->input('receiver_address'),
-            'shipping'                => $request->input('shipping'),
-            'shipping_type'           => $request->input('shipping_type'),
-            'payment_method'          => $request->input('payment_method'),
-            'shipping_cost'           => $request->input('shipping_cost'),
-            'shipping_cashback'       => $request->input('shipping_cashback'),
-            'service_fee'             => $request->input('service_fee'),
-            'additional_cost'         => $request->input('additional_cost'),
-            'grand_total'             => $request->input('grand_total'),
-            'cod_value'               => $request->input('cod_value'),
-            'insurance_value'         => $request->input('insurance_value'),
-            'order_details'           => $request->input('order_details'),
-            ])->withHeader(
-                'X-Api-Key', $this->key
-            );
-            $response = json_decode($response->body(), true);
-            if ($response['status'] == 200) {
+            $body = $request->all();
+
+            $response = Http::withHeader(
+                'x-api-key', $this->key
+            )->post($this->url . 'order/api/v1/orders/store',$body );
+            if ($response->successful()) {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => true,
                     'message' => 'Success',
                     'data' => $response['data'],
                 ]);
             } else {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => false,
                     'message' => 'Failed',
-                    'data' => $response['message'],
-                ]);
+                    'data' =>$response,
+                ], 500);
             }
         } catch (\Throwable $th) {
             //throw $th;
@@ -227,33 +253,34 @@ class RajaOngkirController extends Controller{
     public function OrderPickup(Request $request){
         try {
             $request->validate([
-                'pickup_date'     => 'required|date_format:Y-m-d',
+                'pickup_date'     => 'required',
                 'pickup_time'     => 'required|string|max:255',
                 'pickup_vehicle'  => 'required|string|max:255',
                 'orders'          => 'required|array|min:1',
                 'orders.*.order_no' => 'required|string|max:255',
             ]);
 
-            $response = Http::post($this->url . 'order/api/v1/pickup/request', [
+            $response = Http::withHeader(
+                'x-api-key', $this->key
+            )->post($this->url . 'order/api/v1/pickup/request', [
                 'pickup_date'    => $request->input('pickup_date'),
                 'pickup_time'    => $request->input('pickup_time'),
                 'pickup_vehicle' => $request->input('pickup_vehicle'),
                 'orders'         => $request->input('orders'),
-            ])->withHeader(
-                'X-Api-Key', $this->key
-            );
-            $response = json_decode($response->body(), true);
-            if ($response['status'] == 200) {
+            ]);
+            if ($response->successful()) {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => true,
                     'message' => 'Success',
                     'data' => $response['data'],
                 ]);
             } else {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => false,
                     'message' => 'Failed',
-                    'data' => $response['message'],
+                    'data' =>$response,
                 ]);
             }
         } catch (\Throwable $th) {
@@ -280,22 +307,23 @@ class RajaOngkirController extends Controller{
             if ($request->input('page')) {
                 $url .= '&page=' . $request->input('page');
             }
-            $response = Http::post($url)->withHeader(
-                'X-Api-Key', $this->key
-            );
+            $response = Http::withHeader(
+                'x-api-key', $this->key
+            )->post($url);
             
-            $response = json_decode($response->body(), true);
-            if ($response['status'] == 200) {
+            if ($response->successful()) {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => true,
                     'message' => 'Success',
                     'data' => $response['data'],
                 ]);
             } else {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => false,
                     'message' => 'Failed',
-                    'data' => $response['message'],
+                    'data' =>$response,
                 ]);
             }
         } catch (\Throwable $th) {
@@ -314,23 +342,24 @@ class RajaOngkirController extends Controller{
                 'order_no' => 'required|string|max:255',
             ]);
 
-            $response = Http::put($this->url . 'order/api/v1/orders/cancel', [
+            $response = Http::withHeader(
+                'x-api-key', $this->key
+            )->put($this->url . 'order/api/v1/orders/cancel', [
                 'order_no' => $request->input('order_no'),
-            ])->withHeader(
-                'X-Api-Key', $this->key
-            );
-            $response = json_decode($response->body(), true);
-            if ($response['status'] == 200) {
+            ]);
+            if ($response->successful()) {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => true,
                     'message' => 'Success',
                     'data' => $response['data'],
                 ]);
             } else {
+                $response = json_decode($response->body(), true);
                 return response()->json([
                     'status' => false,
                     'message' => 'Failed',
-                    'data' => $response['message'],
+                    'data' =>$response,
                 ]);
             }
         } catch (\Throwable $th) {

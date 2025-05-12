@@ -13,6 +13,7 @@ class Worker extends Model
         // 'member_id',
         'branch_id',
         'name',
+        'password',
         'phone',
         'email',
         'address',

@@ -48,19 +48,19 @@ trait AuthClientTrait
         try {
             $request->validate([
                 'phone'          => 'required|unique:clients,phone',
-                'password'       => 'required|string|min:8|confirmed',
-                'client'         => 'array',
-                'client.name'    => 'required|string|max:255',
-                'client.address' => 'nullable',
-                'client.email'   => 'required|email|unique:clients,email',
+                // 'password'       => 'required|string|min:8|confirmed',
+                'password'       => 'required|string',
+                'name'    => 'required|string|max:255',
+                'address' => 'nullable',
+                'email'   => 'required|email|unique:clients,email',
             ]);
 
             $client = new Client();
-            $client->name      = $request->input('client.name');
-            $client->email     = $request->input('client.email');
+            $client->name      = $request->input('name');
+            $client->email     = $request->input('address');
             $client->phone     = $request->phone;
             $client->password  = Hash::make($request->password);
-            $client->address   = $request->input('client.address') ?? null;
+            $client->address   = $request->input('address') ?? null;
             $client->saldo     = 0;
             $client->points    = 0;
             $client->is_deleted = 0;
@@ -91,11 +91,11 @@ trait AuthWorkerTrait
     {
         try {
             $request->validate([
-                'email'    => 'required|email',
+                'username'    => 'required',
                 'password' => 'required|string',
             ]);
 
-            $worker = Worker::where('email', '=', $request->email)
+            $worker = Worker::where('username', '=', $request->username)
                 ->where('is_deleted', '=', 0)
                 ->first();
 
@@ -119,41 +119,41 @@ trait AuthWorkerTrait
     {
         try {
             $request->validate([
-                'email'          => 'required|email|unique:workers,email',
-                'password'       => 'required|string|min:8|confirmed',
-                'worker'         => 'array',
-                'worker.name'    => 'required|string|max:255',
-                'worker.phone'   => 'nullable',
-                'worker.branch_id' => 'required|integer',
-                'worker.position_id' => 'required|integer',
-                'worker.salary'  => 'nullable|numeric',
-                'worker.status'  => 'nullable|integer',
-                'worker.address' => 'nullable',
+                'username'  => 'required|unique:workers,username',
+                'password'  => 'required|string',
+                'name'      => 'required|string|max:255',
+                'phone'     => 'nullable',
+                'branch_id' => 'required|integer',
+                'position_id' => 'required|integer',
+                'salary'  => 'nullable|numeric',
+                'status'  => 'nullable|integer',
+                'address' => 'nullable',
             ]);
 
             // Check if branch_id and position_id exist in the database
-            $branchExists = Branch::where('id', $request->input('worker.branch_id'))->exists();
-            $positionExists = Position::where('id', $request->input('worker.position_id'))->exists();
+            $branchExists = Branch::where('id', $request->input('branch_id'))->exists();
+            $positionExists = Position::where('id', $request->input('position_id'))->exists();
 
             if (!$branchExists || !$positionExists) {
                 if (!$branchExists) {
-                    $request->merge(['worker.branch_id' => null]);
+                    $request->merge(['branch_id' => null]);
                 }
                 if (!$positionExists) {
-                    $request->merge(['worker.position_id' => null]);
+                    $request->merge(['position_id' => null]);
                 }
             }
 
             $worker = new Worker();
-            $worker->name       = $request->input('worker.name');
+            $worker->username   = $request->input('username');
+            $worker->name       = $request->input('name');
             $worker->email      = $request->email;
             $worker->password   = Hash::make($request->password);
-            $worker->branch_id  = $request->input('worker.branch_id');
-            $worker->position_id = $request->input('worker.position_id');
-            $worker->phone      = $request->input('worker.phone') ?? null;
-            $worker->address    = $request->input('worker.address') ?? null;
-            $worker->salary     = $request->input('worker.salary') ?? null;
-            $worker->status     = $request->input('worker.status') ?? 0;
+            $worker->branch_id  = $request->input('branch_id');
+            $worker->position_id = $request->input('position_id');
+            $worker->phone      = $request->input('phone') ?? null;
+            $worker->address    = $request->input('address') ?? null;
+            $worker->salary     = $request->input('salary') ?? null;
+            $worker->status     = $request->input('status') ?? 0;
             $worker->is_deleted = 0;
             $worker->save();
 
@@ -161,6 +161,8 @@ trait AuthWorkerTrait
                 'message' => 'Worker registered successfully',
                 'payload' => [
                     'worker_id' => $worker->id,
+                    'username'  => $worker->username,
+                    'password'  => $worker->password,
                     'email'     => $worker->email,
                     'name'      => $worker->name,
                 ]
