@@ -1,0 +1,12 @@
+Admin
+Shipping Status -> Edit/Cancel
+
+Client
+Payment -> Push Item [Cart] -> RajaOngkir Post(Store) -> Orders -> Order Tracking 
+-> Loop Cart and Add Item Sold -> Remove Item [Cart]
+
+Item Refund
+Refund -> RajaOngkir Post(order-cancel) -> Remove Item Sold based on Order_No
+
+Item Delivered
+Delivered -> Loop Item Sold and Update Stock Inventory

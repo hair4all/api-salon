@@ -1,0 +1,23 @@
+{
+    "tabWidth": 4,
+    "useTabs": false,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "printWidth": 120,
+    "bracketSpacing": true,
+    "plugins": ["prettier-plugin-php", "prettier-plugin-blade"],
+    "overrides": [
+        {
+            "files": ["*.php"],
+            "options": {
+                "parser": "php"
+            }
+        },
+        {
+            "files": ["*.blade.php"],
+            "options": {
+                "parser": "blade"
+            }
+        }
+    ]
+}
