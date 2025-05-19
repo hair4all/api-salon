@@ -69,7 +69,9 @@ class TransactionController extends Controller
     {
         //
         try {
-            $transaction = Transaction::query()->where('is_deleted', 0)->findOrFail($id);
+            $transaction = Transaction::query()->where('is_deleted', 0)->f
+            ->where('id', $id)
+            ->first();
             if (!$transaction) {
                 return response()->json([
                     'status' => false,

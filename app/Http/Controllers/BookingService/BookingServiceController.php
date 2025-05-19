@@ -71,7 +71,15 @@ class BookingServiceController extends Controller
     {
         //
         try {
-            $booking_service = Booking_Service::query()->where('is_deleted', 0)->findOrFail($id);
+            $booking_service = Booking_Service::query()->where('is_deleted', 0)->where('id', $id)->first();
+
+            if (!$booking_service) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Booking Service not found',
+                ], 404);
+            }
+
             return response()->json([
                 'status' => true,
                 'message' => 'Booking Service',

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('email')->nullable();
             $table->string('address')->nullable();
+            $table->string('address_id')->nullable();
             $table->decimal('saldo')->nullable();
             $table->decimal('points')->nullable();
             $table->boolean('is_deleted')->default(false);

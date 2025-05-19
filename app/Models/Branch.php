@@ -13,6 +13,7 @@ class Branch extends Model
         'name',
         'image',
         'address',
+        'address_id',
         'phone',
         'email',
         'status',

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('client_id')->nullable();
             $table->foreign('client_id')->references('id')->on('clients')->nullOnDelete()->cascadeOnUpdate();
+            $table->string('branch_id')->nullable();
+            $table->foreign('branch_id')->references('id')->on('branches')->nullOnDelete()->cascadeOnUpdate();
             $table->datetime('booking_date')->nullable();
             $table->string('notes')->nullable();
             $table->string('status')->nullable();

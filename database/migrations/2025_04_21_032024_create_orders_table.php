@@ -16,10 +16,6 @@ return new class extends Migration
             $table->string('order_number')->unique()->nullable();
             $table->string('transaction_id')->nullable();
             $table->foreign('transaction_id')->references('id')->on('transactions')->nullOnDelete()->cascadeOnUpdate();
-            $table->string('cart_id')->nullable();
-            $table->string('shipping_address_id')->nullable();
-            $table->foreign('shipping_address_id')->references('id')->on('shipping__addresses')->nullOnDelete()->cascadeOnUpdate();
-            $table->integer('total_price')->nullable();
             $table->string('courier')->nullable();
             $table->string('shipping_cost')->nullable();
             $table->string('status')->nullable();

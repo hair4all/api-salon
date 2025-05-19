@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->foreign('branch_id')->references('id')->on('branches')->nullOnDelete()->cascadeOnUpdate();
             $table->string('category_id')->nullable();
             $table->foreign('category_id')->references('id')->on('categories')->nullOnDelete()->cascadeOnUpdate();
+            $table->decimal('weight')->nullable();
             $table->decimal('price')->nullable();
             $table->integer('stock')->nullable();
             $table->boolean('is_deleted')->default(false);

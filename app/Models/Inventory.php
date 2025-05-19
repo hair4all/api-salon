@@ -12,6 +12,7 @@ class Inventory extends Model
         'id',
         'name',
         'image',
+        'weight',
         'branch_id',
         'category_id',
         'price',

@@ -15,6 +15,7 @@ class Client extends Model
         'phone',
         'password',
         'address',
+        'address_id',
         'saldo',
         'points',
         'is_deleted',

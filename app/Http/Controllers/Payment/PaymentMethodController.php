@@ -67,7 +67,10 @@ class PaymentMethodController extends Controller
     {
         //
         try {
-            $paymentMethod = Payment_Method::find($id)->where('is_deleted', 0);
+            $paymentMethod = Payment_Method::query()
+            ->where('id', $id)
+            ->where('is_deleted', 0)
+            ->first();
             if (!$paymentMethod) {
                 return response()->json([
                     'status' => false,

@@ -15,6 +15,8 @@ class Product extends Model
         'branch_id',
         'discount',
         'expiry_discount_date',
+        'points',
+        'limit',
         'status',
         'is_deleted',
     ];

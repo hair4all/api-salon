@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Route;
 require __DIR__ . '/Auth/index.php';
 
 // Include the routes for cities, districts, and provinces
-require __DIR__ . '/city.php';
-require __DIR__ . '/district.php';
-require __DIR__ . '/province.php';
+// require __DIR__ . '/city.php';
+// require __DIR__ . '/district.php';
+// require __DIR__ . '/province.php';
 require __DIR__ . '/branch.php';
 
 // Include the routes for products, payments, bookings, and users

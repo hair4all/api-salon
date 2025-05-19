@@ -78,6 +78,7 @@ class BookingController extends Controller
 
             $request->validate([
                 'client_id' => 'integer',
+                'branch_id' => 'integer',
                 'booking_date' => 'date',
                 'notes' => 'nullable|string',
                 'status' => 'string',
@@ -113,7 +114,7 @@ class BookingController extends Controller
     {
         //
         try {
-            $booking = Booking::find($id)->where('is_deleted', 0)->first();
+            $booking = Booking::query()->where('id',$id)->where('is_deleted', 0)->first();
             if (!$booking) {
                 return response()->json([
                     'status' => false,
@@ -154,6 +155,7 @@ class BookingController extends Controller
         try {
             $request->validate([
                 'client_id' => 'integer',
+                'branch_id' => 'integer',
                 'booking_date' => 'date',
                 'notes' => 'nullable|string',
                 'status' => 'string',

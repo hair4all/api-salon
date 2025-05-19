@@ -106,6 +106,12 @@ class TopupHistoryController extends Controller
                 'status' => 'nullable|string',
             ]);
             $topupHistory = Topup_History::findOrFail($id);
+            if (!$topupHistory) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Topup History not found',
+                ]);
+            }
             $topupHistory->update($request->all());
             return response()->json([
                 'status' => true,

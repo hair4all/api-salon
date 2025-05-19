@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->integer('discount')->nullable();
             $table->date('expiry_discount_date')->nullable();
             $table->integer('points')->nullable();
+            $table->integer('limit')->nullable();
             $table->string('status')->nullable();
             $table->boolean('is_deleted')->default(false);
             $table->timestamps();

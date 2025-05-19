@@ -67,6 +67,14 @@ class CategoryController extends Controller
         //
         try {
             $category = Category::query()->where('is_deleted', 0)->findOrFail($id);
+            
+            if (!$category) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Category not found',
+                ], 404);
+            }
+
             return response()->json([
                 'status' => true,
                 'message' => 'Category',
@@ -95,6 +103,14 @@ class CategoryController extends Controller
                 // 'description' => 'nullable|string',
             ]);
             $category->update($request->all());
+
+            if (!$category) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Category not found',
+                ], 404);
+            }
+
             return response()->json([
                 'status' => true,
                 'message' => 'Category updated successfully',

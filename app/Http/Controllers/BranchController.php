@@ -36,13 +36,13 @@ class BranchController extends Controller
         //
         try {
             $request->validate([
-                'name' => 'required|string|max:255',
+                'name' => 'nullable|string|max:255',
                 'image' => 'nullable',
-                'address' => 'required|string|max:500',
-                'phone' => 'required|string|max:15',
-                'email' => 'required|email|max:255|unique:branches,email',
-                'status' => 'required|boolean',
-                'manager_id' => 'required|integer|exists:members,id',
+                'address' => 'nullable|string|max:500',
+                'phone' => 'nullable|string|max:15',
+                'email' => 'nullable|email|max:255|unique:branches,email',
+                'status' => 'nullable|boolean',
+                'manager_id' => 'nullable|integer|exists:members,id',
             ]);
             $branch = Branch::create($request->all());
             return response()->json([
