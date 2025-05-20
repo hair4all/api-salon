@@ -87,6 +87,8 @@ class OrderController extends Controller
                 'payment_method'          => 'nullable|string|in:prepaid,cod',
                 'additional_cost'         => 'nullable|numeric|min:0',
                 'grand_total'             => 'required|numeric|min:0',
+                // 'total_payment'           => 'required|numeric|min:0',
+                'coins_payment'            => 'nullable|numeric|min:0',
                 'cart'                    => 'required|array',
                 'cart.*.product_id'       => 'required|integer|exists:products,id',
                 'cart.*.name'             => 'required|string',

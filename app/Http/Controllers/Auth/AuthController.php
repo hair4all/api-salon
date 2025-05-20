@@ -63,6 +63,7 @@ trait AuthClientTrait
             $client->address   = $request->input('address') ?? null;
             $client->saldo     = 0;
             $client->points    = 0;
+            $client->coins     = 0;
             $client->is_deleted = 0;
             $client->save();
 

@@ -26,3 +26,6 @@ require __DIR__ . '/User/index.php';
 // Include the routes for RajaOngkir Callback
 require __DIR__ . '/RajaOngkirCallback/index.php';
 
+// Include the routes for Midtrans Callback
+require __DIR__ . '/MidtransCallback/index.php';
+

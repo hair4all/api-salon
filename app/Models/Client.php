@@ -17,6 +17,7 @@ class Client extends Model
         'address',
         'address_id',
         'saldo',
+        'coins',
         'points',
         'is_deleted',
     ];

@@ -120,6 +120,17 @@ class ShippingRepositories
                     ]);
                 }
 
+                $total_payment = $item['grand_total'] - $data['coins_payment'];
+                // Update saldo on client
+                Client::where('id', $data['client_id'])
+                        ->decrement('saldo', $total_payment);
+                
+                // Update coin on client
+                if($data['coins_payment'] && $data['coins_payment'] > 0) {
+                    Client::where('id', $data['client_id'])
+                            ->decrement('points', $data['coins_payment']);
+                }
+
                 return [
                     'status'           => true,
                     'message'          => 'Order created and stock updated',

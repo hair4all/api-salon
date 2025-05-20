@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('address_id')->nullable();
             $table->decimal('saldo')->nullable();
+            $table->decimal('coins')->nullable();
             $table->decimal('points')->nullable();
             $table->boolean('is_deleted')->default(false);
             $table->timestamps();
