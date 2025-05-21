@@ -137,7 +137,7 @@ class ShippingRepositories
                 // Update coin on client
                 if($data['coins_payment'] && $data['coins_payment'] > 0) {
                     Client::where('id', $data['client_id'])
-                            ->decrement('coins', $data['coins_payment']);
+                            ->decrement('coins', $data['coins_payment'] ?? 0);
                 }
 
                 

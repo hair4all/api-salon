@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Product;
 
+use App\Models\Branch;
+use App\Models\Client;
 use App\Models\Inventory;
 use App\Models\Item_Sold;
 use App\Models\Order;
@@ -265,6 +267,17 @@ class OrderController extends Controller
      *
      * @param  int  $order_id Order ID
      * @return \Illuminate\Http\JsonResponse
+     * 
+     * Algoritma:
+     * 1. Validasi order_id
+     * 2. Ambil order dari database
+     * 3. Panggil RajaOngkirService::cancelOrder()
+     * 4. Jika berhasil, update status order ke canceled
+     * 5. Ambil detail order dari RajaOngkir
+     * 6. Update inventory dan sold items
+     * 7. Update coins dan saldo client
+     * 8. Update cash on branch
+     * 9. Kembalikan response JSON
      */
     public function cancelOrder($order_id){
         Log::info('OrderController@cancelOrder called', ['order_id' => $order_id]);
@@ -338,6 +351,21 @@ class OrderController extends Controller
                     'id'    => $invetory_id,
                     'stock' => Inventory::where('id', $invetory_id)->first()->stock,
                 ];
+            }
+
+            // Update coins and saldo of client
+            $client = Client::where('id', $order->client_id)->first();
+            if ($client) {
+                $client->increment('coins', $order->coins_payment);
+                $client->increment('saldo', $order->grand_total);
+            }
+
+            // Update cash on branch
+            $branch = Branch::where('id', $order->branch_id)->first();
+
+            if ($branch) {
+                $cash_deduction = $order->payment - ($order->coins ?? 0); 
+                $branch->decrement('cash', $cash_deduction);
             }
 
             Log::info('OrderController@cancelOrder success', ['order_id' => $order_id]);
