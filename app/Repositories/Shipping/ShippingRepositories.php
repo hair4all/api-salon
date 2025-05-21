@@ -118,9 +118,15 @@ class ShippingRepositories
                         'sold_date'    => Carbon::now(),
                         'is_deleted'   => false,
                     ]);
+
+                    // Update points on client
+                    if($item['points'] && $item['points'] > 0) {
+                        Client::where('id', $data['client_id'])
+                                ->increment('points', $item['points']);
+                    }
                 }
 
-                $total_payment = $item['grand_total'] - $data['coins_payment'];
+                $total_payment = $item['grand_total'] - ($data['coins_payment'] ?? 0);
                 // Update saldo on client
                 Client::where('id', $data['client_id'])
                         ->decrement('saldo', $total_payment);
@@ -128,8 +134,14 @@ class ShippingRepositories
                 // Update coin on client
                 if($data['coins_payment'] && $data['coins_payment'] > 0) {
                     Client::where('id', $data['client_id'])
-                            ->decrement('points', $data['coins_payment']);
+                            ->decrement('coins', $data['coins_payment']);
                 }
+
+                
+
+                // Update Cash on Branch
+                Branch::where('id', $data['branch_id'])
+                        ->increment('cash', $total_payment);
 
                 return [
                     'status'           => true,

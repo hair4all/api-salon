@@ -14,6 +14,7 @@ class Product extends Model
         'category_id',
         'branch_id',
         'discount',
+        'is_promoted',
         'expiry_discount_date',
         'points',
         'limit',
