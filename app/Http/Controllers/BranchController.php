@@ -44,7 +44,10 @@ class BranchController extends Controller
                 'status' => 'nullable|boolean',
                 'manager_id' => 'nullable|integer|exists:members,id',
             ]);
-            $branch = Branch::create($request->all());
+            $data = $request->all();
+            $data['branch_code'] = 'BR-' . strtoupper(uniqid());
+            $data['cash'] = 0;
+            $branch = Branch::create($data);
             return response()->json([
                 'status' => true,
                 'message' => 'Branch created successfully',
@@ -98,6 +101,14 @@ class BranchController extends Controller
                 'manager_id' => 'nullable|integer|exists:members,id',
             ]);
             $branch = Branch::findOrFail($id);
+            if($branch->is_deleted) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Branch not found',
+                ], 404);
+            }
+            
+
             $branch->update($request->all());
             return response()->json([
                 'status' => true,
