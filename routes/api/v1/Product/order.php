@@ -4,13 +4,27 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Product\OrderController;
+
+// Branch CMS
 Route::group([], function () {
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/show/{id}', [OrderController::class, 'show']);
     Route::post('/orders', [OrderController::class, 'store']);
     Route::post('/orders/edit/{id}', [OrderController::class, 'update']);
     Route::delete('/orders/delete/{id}', [OrderController::class, 'destroy']);
+
+    
+    
 });
+
+// Client API
+Route::group([], function () {
+    Route::post('/orders/checkout', [OrderController::class, 'checkout']);
+    Route::post('/orders/cancel/{order_id}', [OrderController::class, 'cancelOrder']);
+});
+
+
+
 // Route::resource('orders', OrderController::class)->names([
 //     'index' => 'orders.index',
 //     'show' => 'orders.show',

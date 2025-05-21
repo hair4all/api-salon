@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Product;
 
+use App\Models\Inventory;
+use App\Models\Item_Sold;
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Service\Shipping\RajaOngkirService;
@@ -258,6 +261,109 @@ class OrderController extends Controller
     }
 
     /**
+     * Cancel the specified order.
+     *
+     * @param  int  $order_id Order ID
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function cancelOrder($order_id){
+        Log::info('OrderController@cancelOrder called', ['order_id' => $order_id]);
+
+        try {
+            $order = Order::where('is_deleted', false)->where('id', $order_id)->first();
+
+            // Check if order exists
+            if (!$order) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Order not found',
+                    'data'    => null,
+                ], 404);
+            }
+
+            // Cancel order via RajaOngkir
+            $rajaResponse = $this->rajaongkirservice->cancelOrder($order->order_number);
+
+            // Check if RajaOngkir response is successful
+            if ($rajaResponse['status'] == false) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Gagal membatalkan order',
+                    'data'    => $rajaResponse['message'],
+                ], 500);
+            }
+
+            // Update order status to canceled
+            $order->update(['status' => 'canceled']);
+
+            // Get order details from RajaOngkir
+            $order_check = $this->rajaongkirservice->getOrderDetail($order->order_number);
+
+            // Initialize before and after arrays
+            $before = [];
+            $after  = [];
+
+            // Update inventory and sold items
+            foreach ($order_check["order_details"] as $item) {
+                // Get inventory item from product
+                $product = Product::where('id', $item->product_variant_name)->first();
+                
+                if (!$product) {
+                    return response()->json([
+                        'status'  => false,
+                        'message' => 'Gagal menemukan item di inventory',
+                        'data'    => null,
+                    ], 404);
+                }
+
+                // Store inventory data before update
+                $before[] = [
+                    'id'    => $product->inventory_id,
+                    'stock' => $product->stock,
+                ];
+
+                $invetory_id = $product->inventory_id;
+
+                // Increment inventory
+                Inventory::where('id', $invetory_id)
+                         ->increment('stock', $item->qty);
+
+                // Delete sold item record
+                Item_Sold::where('inventory_id', $invetory_id)
+                         ->where('sold_date', now())
+                         ->delete();
+
+                // Store inventory data after update
+                $after[] = [
+                    'id'    => $invetory_id,
+                    'stock' => Inventory::where('id', $invetory_id)->first()->stock,
+                ];
+            }
+
+            Log::info('OrderController@cancelOrder success', ['order_id' => $order_id]);
+
+            return response()->json([
+                'status'  => true,
+                'message' => 'Order canceled successfully',
+                'data'    => $rajaResponse['data'],
+                'before'  => $before,
+                'after'   => $after,
+            ]);
+        } catch (\Throwable $th) {
+            Log::error('OrderController@cancelOrder error', [
+                'order_id' => $order_id,
+                'message'  => $th->getMessage(),
+            ]);
+
+            return response()->json([
+                'status'  => false,
+                'message' => 'Gagal membatalkan order',
+                'data'    => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Calculate and show checkout data (ongkir, estimasi, dll).
      *
      * Algoritma:
@@ -292,6 +398,10 @@ class OrderController extends Controller
             // Hitung nilai barang total
             $itemValue = collect($request->cart)
                 ->reduce(fn($carry, $item) => $carry + ($item['price'] * $item['quantity']), 0);
+            
+            // Hitung nilai limit coins
+            $coinsLimit = collect($request->cart)
+                ->reduce(fn($carry, $item) => $carry + ($item['coins'] * $item['quantity']), 0); 
 
             Log::info('OrderController@showCheckout calculations', [
                 'weight'     => $weight,
@@ -306,7 +416,18 @@ class OrderController extends Controller
                 'item_value'               => $itemValue,
             ]);
 
+
             Log::info('OrderController@showCheckout success');
+            $shippingData = $shippingData['data'] ?? null;
+            if (!$shippingData) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Gagal menghitung ongkir',
+                    'data'    => null,
+                ], 500);
+            }
+
+            $shippingData['coins_limit'] = $coinsLimit;
 
             return response()->json([
                 'status'  => true,

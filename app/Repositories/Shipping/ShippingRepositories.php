@@ -101,8 +101,11 @@ class ShippingRepositories
                 $order = Order::create([
                     'order_number'   => $rajaResponse['data']['order_no'],
                     'transaction_id' => $data['transaction_id'] ?? null,
+                    'client_id'      => $data['client_id'],
                     'courier'        => $data['shipping_name'],
                     'shipping_cost'  => $data['shipping_cost'],
+                    'payment'        => $data['grand_total'] ?? 0,
+                    'coins'          => $data['coins_payment'] ?? 0,
                     'status'         => 'pending',
                 ]);
 
