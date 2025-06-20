@@ -40,11 +40,12 @@ class ClientController extends Controller
         try {
             $request->validate([
                 'member_id' => 'nullable|integer',
-                'name' => 'nullable|string|max:255',
+                'name' => 'nullable|string',
+                'pin' => 'nullable|string|max:6',
                 'email' => 'nullable|email|unique:clients,email',
-                'phone' => 'nullable|string|max:15',
+                'phone' => 'nullable|string|unique:clients,phone',
                 'password' => 'nullable|string',
-                'address' => 'nullable|string|max:500',
+                'address' => 'nullable|string',
                 'saldo' => 'nullable|numeric|min:0',
                 'points' => 'nullable|integer|min:0',
             ]);
@@ -103,8 +104,8 @@ class ClientController extends Controller
                 'member_id' => 'nullable|integer',
                 'name' => 'nullable|string|max:255',
                 'email' => 'nullable|email|unique:clients,email,' . $id,
-                'phone' => 'nullable|string|max:15',
-                'address' => 'nullable|string|max:500',
+                'phone' => 'nullable|string|unique:clients,phone,' . $id,
+                'address' => 'nullable|string',
                 'saldo' => 'nullable|numeric|min:0',
                 'points' => 'nullable|integer|min:0',
             ]);

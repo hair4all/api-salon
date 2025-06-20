@@ -40,6 +40,8 @@ class TransactionController extends Controller
         //
         try {
             $request->validate([
+                'name' => 'nullable|string',
+                'description' => 'nullable|string',
                 'client_id' => 'nullable|integer',
                 'worker_id' => 'nullable|integer',
                 'transaction_date' => 'nullable|date',
@@ -102,6 +104,8 @@ class TransactionController extends Controller
         //
         try {
             $request->validate([
+                'name' => 'nullable|string',
+                'description' => 'nullable|string',
                 'client_id' => 'nullable|integer',
                 'worker_id' => 'nullable|integer',
                 'transaction_date' => 'nullable|date',

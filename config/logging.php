@@ -127,6 +127,13 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'transaction' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/transaction.log'),
+            'level' => env('LOG_TRANSACTION_LEVEL', 'info'),
+            'replace_placeholders' => true,
+        ],
+
     ],
 
 ];

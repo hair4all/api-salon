@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('password')->unique();
             $table->string('name')->nullable();
+            $table->string('image')->nullable();
+            $table->string('pin')->nullable();
             $table->string('email')->nullable();
             $table->string('address')->nullable();
             $table->string('address_id')->nullable();

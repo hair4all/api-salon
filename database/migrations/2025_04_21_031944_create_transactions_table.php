@@ -12,6 +12,8 @@ return new class extends Migration {
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->nullable();
+            $table->string('description')->nullable();
             $table->string('client_id')->nullable();
             $table->foreign('client_id')->references('id')->on('clients')->nullOnDelete()->cascadeOnUpdate();
             $table->string('worker_id')->nullable();
