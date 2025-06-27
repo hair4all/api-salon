@@ -87,6 +87,7 @@ class ShippingRepositories
             //     "order_details"            => $order->order_details,
             // ]
             // );
+            $service_fee = $order->service_fee ?? round($order->grand_total * 0.028); // Default service fee if not set
             return [
                 'order_date'               => now()->toDateString(),
                 'brand_name'               => config('app.name'),
@@ -106,7 +107,7 @@ class ShippingRepositories
                 "payment_method"           => $order->payment_method ? $order->payment_method : 'COD',
                 "shipping_cost"            => $order->shipping_cost ?? 1,
                 "shipping_cashback"        => $order->shipping_cashback ?? 1,
-                "service_fee"              => $order->service_fee ?? 2500,
+                "service_fee"              => $service_fee,
                 "additional_cost"          => $order->additional_cost ?? 1,
                 "grand_total"              => $order->grand_total ?? 1,
                 "cod_value"                => $order->grand_total ?? 1,
@@ -139,8 +140,8 @@ class ShippingRepositories
                     'order_number'   => $rajaResponse['data']['order_no'],
                     'transaction_id' => $data['transaction_id'] ?? null,
                     'client_id'      => $data['client_id'],
-                    'courier'        => $data['shipping_name'],
-                    'shipping_cost'  => $data['shipping_cost'],
+                    'courier'        => $data['shipping_type'],
+                    'shipping_cost'  => $data['service_fee'] ?? 0,
                     'payment'        => $data['grand_total'] ?? 0,
                     'coins'          => $data['coins_payment'] ?? 0,
                     'status'         => 'pending',
@@ -158,15 +159,22 @@ class ShippingRepositories
                         'sold_date'    => Carbon::now(),
                         'is_deleted'   => false,
                     ]);
-
+                    
+                    $client = Client::find($data['client_id']);
                     // Update points on client
-                    if($item['points'] && $item['points'] > 0) {
-                        Client::where('id', $data['client_id'])
-                                ->increment('points', $item['points']);
+                    if(isset($item['points']) && $item['points'] && $item['points'] > 0) {
+                        if($client->points>=0){
+                            Client::where('id', $data['client_id'])
+                                    ->increment('points', $item['points']);
+                        }
+                        else{
+                            $client->points = $item['points'] ?? 0;
+                            $client->save();
+                        }
                     }
                 }
 
-                $total_payment = $item['grand_total'] - ($data['coins_payment'] ?? 0);
+                $total_payment = $data['grand_total'] - ($data['coins_payment'] ?? 0);
                 // Update saldo on client
                 Client::where('id', $data['client_id'])
                         ->decrement('saldo', $total_payment);
