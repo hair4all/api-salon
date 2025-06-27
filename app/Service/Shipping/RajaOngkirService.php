@@ -17,7 +17,7 @@ class RajaOngkirService
 
     public function getDestination($search)
     {
-        $response = Http::withHeader('x-api-key', $this->key)
+        $response = Http::withHeader('x-api-key', $this->key)->withHeader('Content-Type', 'application/x-www-form-urlencoded')
             ->get($this->url . 'tariff/api/v1/destination/search', [
                 'keyword' => $search,
             ]);
@@ -27,7 +27,7 @@ class RajaOngkirService
 
     public function getHistoryAirwayBill($shipping, $airwayBill)
     {
-        $response = Http::withHeader('x-api-key', $this->key)
+        $response = Http::withHeader('x-api-key', $this->key)->withHeader('Content-Type', 'application/x-www-form-urlencoded')
             ->get($this->url . 'order/api/v1/orders/history-airway-bill', [
                 'shipping' => $shipping,
                 'airway_bill' => $airwayBill,
@@ -38,7 +38,7 @@ class RajaOngkirService
 
     public function getOrderDetail($orderNo)
     {
-        $response = Http::withHeader('x-api-key', $this->key)
+        $response = Http::withHeader('x-api-key', $this->key)->withHeader('Content-Type', 'application/x-www-form-urlencoded')
             ->get($this->url . 'order/api/v1/orders/detail', [
                 'order_no' => $orderNo,
             ]);
@@ -48,7 +48,7 @@ class RajaOngkirService
 
     public function getShippingCost($params)
     {
-        $response = Http::withHeader('x-api-key', $this->key)
+        $response = Http::withHeader('x-api-key', $this->key)->withHeader('Content-Type', 'application/x-www-form-urlencoded')
             ->get($this->url . 'tariff/api/v1/calculate', $params);
 
         return $this->handleResponse($response);
@@ -56,7 +56,7 @@ class RajaOngkirService
 
     public function storeOrder($body)
     {
-        $response = Http::withHeader('x-api-key', $this->key)
+        $response = Http::withHeader('x-api-key', $this->key)->withHeader('Content-Type', 'application/x-www-form-urlencoded')
             ->post($this->url . 'order/api/v1/orders/store', $body);
 
         return $this->handleResponse($response);
@@ -64,7 +64,7 @@ class RajaOngkirService
 
     public function orderPickup($body)
     {
-        $response = Http::withHeader('x-api-key', $this->key)
+        $response = Http::withHeader('x-api-key', $this->key)->withHeader('Content-Type', 'application/x-www-form-urlencoded')
             ->post($this->url . 'order/api/v1/pickup/request', $body);
 
         return $this->handleResponse($response);
@@ -77,14 +77,14 @@ class RajaOngkirService
             $url .= '&page=' . $page;
         }
 
-        $response = Http::withHeader('x-api-key', $this->key)->post($url);
+        $response = Http::withHeader('x-api-key', $this->key)->withHeader('Content-Type', 'application/x-www-form-urlencoded')->post($url);
 
         return $this->handleResponse($response);
     }
 
     public function cancelOrder($orderNo)
     {
-        $response = Http::withHeader('x-api-key', $this->key)
+        $response = Http::withHeader('x-api-key', $this->key)->withHeader('Content-Type', 'application/x-www-form-urlencoded')
             ->put($this->url . 'order/api/v1/orders/cancel', [
                 'order_no' => $orderNo,
             ]);

@@ -59,6 +59,34 @@ class ShippingRepositories
             $branch = Branch::find($order->branch_id) ?? new Branch();
             $client = Client::find($order->client_id) ?? new Client();
             $order->grand_total = $order->grand_total ?? $totalPrice;
+            // dd(
+            //     [
+            //     'order_date'               => now()->toDateString(),
+            //     'brand_name'               => config('app.name'),
+
+            //     'shipper_name'           => $branch->name,
+            //     'shipper_phone'          => $branch->phone,
+            //     'shipper_destination_id' => $order->shipper_destination_id,
+            //     'shipper_address'        => $branch->address,
+            //     'shipper_email'          => $branch->email ?? "someone@mail.com",
+
+            //     "receiver_name"            => $client->name,
+            //     "receiver_phone"           => $client->phone,
+            //     "receiver_destination_id"  => $order->receiver_destination_id,
+            //     "receiver_address"         => $client->address,
+            //     "shipping"                 => $order->shipping,
+            //     "shipping_type"            => $order->shipping_type,
+            //     "payment_method"           => $order->payment_method ? $order->payment_method : 'COD',
+            //     "shipping_cost"            => $order->shipping_cost ?? 1,
+            //     "shipping_cashback"        => $order->shipping_cashback ?? 1,
+            //     "service_fee"              => $order->service_fee ?? 2500,
+            //     "additional_cost"          => $order->additional_cost ?? 1,
+            //     "grand_total"              => $order->grand_total ?? 1,
+            //     "cod_value"                => $order->grand_total ?? 1,
+            //     "insurance_value"          => $order->insurance_value ?? 1,
+            //     "order_details"            => $order->order_details,
+            // ]
+            // );
             return [
                 'order_date'               => now()->toDateString(),
                 'brand_name'               => config('app.name'),
@@ -78,7 +106,7 @@ class ShippingRepositories
                 "payment_method"           => $order->payment_method ? $order->payment_method : 'COD',
                 "shipping_cost"            => $order->shipping_cost ?? 1,
                 "shipping_cashback"        => $order->shipping_cashback ?? 1,
-                "service_fee"              => $order->service_fee ?? 1,
+                "service_fee"              => $order->service_fee ?? 2500,
                 "additional_cost"          => $order->additional_cost ?? 1,
                 "grand_total"              => $order->grand_total ?? 1,
                 "cod_value"                => $order->grand_total ?? 1,
@@ -94,11 +122,13 @@ class ShippingRepositories
     public function processOrder(array $data)
     {
         try {
+            $rajaOngkirService = new RajaOngkirService();
             // 1. Build the RajaOngkir payload
             $payload = $this->formatOrderDetails((object) $data);
-            
+
             // 2. Send to RajaOngkir
-            $rajaResponse = (new RajaOngkirService())->storeOrder($payload);
+            $rajaResponse = $rajaOngkirService->storeOrder($payload);
+            Log::info('RajaOngkir response', ['response' => $rajaResponse]);
             if (! $rajaResponse['status']) {
                 return $rajaResponse;
             }
@@ -164,10 +194,7 @@ class ShippingRepositories
             return $result;
         } catch (\Exception $e) {
             Log::error("Error processing order: " . $e->getMessage());
-            return [
-                'status'  => false,
-                'message' => 'Failed to process order: ' . $e->getMessage(),
-            ];
+            throw $e;
         }
     }
 }

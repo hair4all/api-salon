@@ -175,9 +175,14 @@ class OrderController extends Controller
 
             // Panggil service untuk memproses order
             $order = $this->shippingrepositories->processOrder($request->all());
-
             Log::info('OrderController@store success', ['order' => $order]);
-
+            if (!$order['status']) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Gagal membuat order',
+                    'data'    => $order,
+                ], 500);
+            }
             return response()->json([
                 'status'  => true,
                 'message' => 'Order created successfully',
