@@ -20,62 +20,69 @@ class ShippingRepositories
         try {
             // Get the order details from the order object
             // and format them into the desired structure
-            $order->order_details = array_map(function ($detail) {
-                $product = Product::find($detail->product_id);
-                $inventory = $product
-                    ? Inventory::find($product->inventory_id)
-                    : null;
+            $order->order_details = $order->order_details ?? [];
+            $totalPrice = 0;
+            
+            $order->order_details = collect($order->cart)
+                ->map(function ($detail) use (&$totalPrice) {
+                    // retrieve product & inventory
+                    // dd($detail);
+                    $product   = Product::find($detail['product_id']);
+                    $inventory = $product
+                        ? Inventory::find($product->inventory_id)
+                        : null;
 
-                if ($product) {
-                    $detail->product_name         = $product->name;
-                    $detail->product_variant_name = $product->id;
-                    $detail->product_price        = $detail->price;
-                    $detail->product_width        = $product->width   ?? $inventory->width   ?? 0;
-                    $detail->product_height       = $product->height  ?? $inventory->height  ?? 0;
-                    $detail->product_weight       = $product->weight  ?? $inventory->weight  ?? 0;
-                    $detail->product_length       = $product->length  ?? $inventory->length  ?? 0;
-                }
+                    $price    = $detail['price']    ?? 0;
+                    $qty      = $detail['qty']      ?? 1;
+                    $subtotal = $detail['subtotal'] ?? ($price * $qty);
 
-                return [
-                    "product_name"         => $detail->product_name,
-                    "product_variant_name" => $detail->product_variant_name,
-                    "product_price"        => $detail->product_price,
-                    "product_width"        => $detail->product_width,
-                    "product_height"       => $detail->product_height,
-                    "product_weight"       => $detail->product_weight,
-                    "product_length"       => $detail->product_length,
-                    "qty"                  => $detail->qty,
-                    "subtotal"             => $detail->subtotal,
-                ];
-            }, $order->order_details);
+                    if ($product) {
+                        // accumulate total price
+                        $totalPrice += $price * $qty;
+                    }
 
-            $branch = Branch::find($order->branch_id);
-            $client = Client::find($order->client_id);
+                    return [
+                        'product_name'         => $product->name ?? $detail['product_name'] ?? 'Unknown Product',
+                        'product_variant_name' => $product->name . "-" . $product->id   ?? null,
+                        'product_price'        => $price,
+                        'product_width'        => $product->width  ?? $inventory->width   ?? 1,
+                        'product_height'       => $product->height ?? $inventory->height  ?? 1,
+                        'product_weight'       => $product->weight ?? $inventory->weight  ?? 1,
+                        'product_length'       => $product->length ?? $inventory->length  ?? 1,
+                        'qty'                  => $qty,
+                        'subtotal'             => $subtotal,
+                    ];
+                })
+                ->values()
+                ->toArray();
 
+            $branch = Branch::find($order->branch_id) ?? new Branch();
+            $client = Client::find($order->client_id) ?? new Client();
+            $order->grand_total = $order->grand_total ?? $totalPrice;
             return [
                 'order_date'               => now()->toDateString(),
                 'brand_name'               => config('app.name'),
 
                 'shipper_name'           => $branch->name,
                 'shipper_phone'          => $branch->phone,
-                'shipper_destination_id' => $order->destination_id,
+                'shipper_destination_id' => $order->shipper_destination_id,
                 'shipper_address'        => $branch->address,
-                'shipper_email'          => $branch->email,
+                'shipper_email'          => $branch->email ?? "someone@mail.com",
 
-                "receiver_name"            => $client->receiver_name,
-                "receiver_phone"           => $client->receiver_phone,
+                "receiver_name"            => $client->name,
+                "receiver_phone"           => $client->phone,
                 "receiver_destination_id"  => $order->receiver_destination_id,
-                "receiver_address"         => $client->receiver_address,
+                "receiver_address"         => $client->address,
                 "shipping"                 => $order->shipping,
                 "shipping_type"            => $order->shipping_type,
-                "payment_method"           => $order->payment_method ? $order->payment_method : 'prepaid',
-                "shipping_cost"            => $order->shipping_cost,
-                "shipping_cashback"        => $order->shipping_cashback,
-                "service_fee"              => $order->service_fee,
-                "additional_cost"          => $order->additional_cost,
-                "grand_total"              => $order->grand_total,
-                "cod_value"                => $order->cod_value ?? 0,
-                "insurance_value"          => $order->insurance_value ?? 0,
+                "payment_method"           => $order->payment_method ? $order->payment_method : 'COD',
+                "shipping_cost"            => $order->shipping_cost ?? 1,
+                "shipping_cashback"        => $order->shipping_cashback ?? 1,
+                "service_fee"              => $order->service_fee ?? 1,
+                "additional_cost"          => $order->additional_cost ?? 1,
+                "grand_total"              => $order->grand_total ?? 1,
+                "cod_value"                => $order->grand_total ?? 1,
+                "insurance_value"          => $order->insurance_value ?? 1,
                 "order_details"            => $order->order_details,
             ];
         } catch (\Exception $e) {
@@ -89,7 +96,7 @@ class ShippingRepositories
         try {
             // 1. Build the RajaOngkir payload
             $payload = $this->formatOrderDetails((object) $data);
-
+            
             // 2. Send to RajaOngkir
             $rajaResponse = (new RajaOngkirService())->storeOrder($payload);
             if (! $rajaResponse['status']) {

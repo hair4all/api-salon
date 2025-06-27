@@ -69,6 +69,78 @@ class OrderController extends Controller
 
     /**
      * Store a newly created order.
+     * 
+     * Algoritma:
+     * 1. Validasi input shipper, receiver, payment, cart.
+     * 2. Proses pembuatan order via ShippingRepositories::processOrder().
+     */
+
+     public function store(Request $request)
+        {
+            try {
+                Log::info('OrderController@store called', $request->all());
+
+                // Validasi data utama
+                $request->validate([
+                    'order_number'   => 'nullable|string|max:255|unique:orders,order_number',
+                    'transaction_id' => 'nullable|string|exists:transactions,id',
+                    'client_id'      => 'required|integer|exists:clients,id',
+                    'branch_id'      => 'required|integer|exists:branches,id',
+                    'courier'        => 'required|string|max:255',
+                    'payment'        => 'required|numeric|min:0',
+                    'coins'          => 'nullable|numeric|min:0',
+                    'shipping_cost'  => 'required|numeric|min:0',
+                    'status'         => 'nullable|string|max:255',
+                ]);
+
+                // Panggil service untuk memproses order
+                $order = Order::create([
+                    'order_number'   => $request->order_number,
+                    'transaction_id' => $request->transaction_id,
+                    'client_id'      => $request->client_id,
+                    'branch_id'      => $request->branch_id,
+                    'courier'        => $request->courier,
+                    'payment'        => $request->payment,
+                    'coins'          => $request->coins ?? 0,
+                    'shipping_cost'  => $request->shipping_cost,
+                    'status'         => $request->status ?? 'pending',
+                ]);
+
+                Log::info('OrderController@store success', ['order' => $order]);
+
+                return response()->json([
+                    'status'  => true,
+                    'message' => 'Order created successfully',
+                    'data'    => $order,
+                ], 201);
+            } catch (\Illuminate\Validation\ValidationException $ve) {
+                // Khusus validasi
+                Log::warning('OrderController@store validation failed', [
+                    'errors' => $ve->errors(),
+                ]);
+
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Validation error',
+                    'data'    => $ve->errors(),
+                ], 422);
+            } catch (\Throwable $th) {
+                Log::error('OrderController@store error', [
+                    'message' => $th->getMessage(),
+                    'trace'   => $th->getTraceAsString(),
+                ]);
+
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Gagal membuat order',
+                    'data'    => $th
+                        ->getMessage(),
+                ], 500);
+            }
+        }
+
+    /**
+     * Store a newly created order in client-side
      *
      * 1. Validasi input shipper, receiver, payment, cart.
      * 2. Proses pembuatan order via ShippingRepositories::processOrder().
@@ -76,7 +148,7 @@ class OrderController extends Controller
      * @param  Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function checkout(Request $request)
     {
         Log::info('OrderController@store called', $request->all());
 
@@ -89,7 +161,7 @@ class OrderController extends Controller
                 'receiver_destination_id' => 'required|integer',
                 'shipping'                => 'required|string',
                 'shipping_type'           => 'required|string',
-                'payment_method'          => 'nullable|string|in:prepaid,cod',
+                'payment_method'          => 'nullable|string',
                 'additional_cost'         => 'nullable|numeric|min:0',
                 'grand_total'             => 'required|numeric|min:0',
                 // 'total_payment'           => 'required|numeric|min:0',
@@ -104,7 +176,7 @@ class OrderController extends Controller
             // Panggil service untuk memproses order
             $order = $this->shippingrepositories->processOrder($request->all());
 
-            Log::info('OrderController@store success', ['order_id' => $order->id]);
+            Log::info('OrderController@store success', ['order' => $order]);
 
             return response()->json([
                 'status'  => true,
