@@ -20,6 +20,7 @@ Route::group([], function () {
 // Client API
 Route::group([], function () {
     Route::post('/orders/checkout', [OrderController::class, 'checkout']);
+    Route::post('/orders/checkout-v2', [OrderController::class, 'checkoutV2']);
     Route::post('/orders/cancel/{order_id}', [OrderController::class, 'cancelOrder']);
 });
 

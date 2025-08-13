@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Payment;
 
 use App\Models\Payment_Tokens;
 use Illuminate\Http\Request;
 use Log;
+
+use App\Http\Controllers\Controller;
 
 class PaymentTokensController extends Controller
 {
@@ -61,6 +63,9 @@ class PaymentTokensController extends Controller
     {
         //
         try {
+            $request->validate([
+                'user_id' => 'required',
+            ]);
             $token = bin2hex(random_bytes(16)); // Generate a random token
 
             // Get timezone from request or use default
