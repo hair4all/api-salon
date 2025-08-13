@@ -43,11 +43,18 @@ class ServiceController extends Controller
             $request->validate([
                 'branch_id' => 'nullable|integer',
                 'name' => 'nullable|string',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'description' => 'nullable|string',
                 'price' => 'nullable|numeric',
                 'discount' => 'nullable|numeric',
                 'expiry_discount_date' => 'nullable|date',
             ]);
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('images/services'), $imageName);
+                $request->merge(['image' => 'images/services/' . $imageName]);
+            }
             $service = Service::create($request->all());
             return response()->json([
                 'status' => true,
@@ -73,6 +80,9 @@ class ServiceController extends Controller
         try {
             $service = Service::query()->where('id', $id)->where('is_delete', 0)->first();
             if ($service) {
+                // Process the image URL if it exists
+                
+
                 return response()->json([
                     'status' => true,
                     'message' => 'Get service',

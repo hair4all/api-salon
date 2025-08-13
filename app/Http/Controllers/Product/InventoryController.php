@@ -19,6 +19,7 @@ class InventoryController extends Controller
             if ($request->has('name')) {
                 $inventories->where('name', 'like', '%' . $request->query('name') . '%');
             }
+            
             return response()->json(
                 $inventories->paginate($request->query('limit') ?? 10)
             );

@@ -11,6 +11,8 @@ Route::group([], function () {
     Route::post('/booking-service', [BookingServiceController::class, 'store']);
     Route::post('/booking-service/edit/{id}', [BookingServiceController::class, 'update']);
     Route::delete('/booking-service/delete/{id}', [BookingServiceController::class, 'destroy']);
+
+    Route::post('/booking-service/checkout', [BookingServiceController::class, 'checkout']);
 });
 
 // Route::resource('booking-service', BookingServiceController::class)->names([

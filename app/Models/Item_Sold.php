@@ -10,6 +10,7 @@ class Item_Sold extends Model
     protected $table = 'item__solds';
     protected $fillable = [
         'id',
+        'order_id',
         'inventory_id',
         'quantity',
         'sold_date',

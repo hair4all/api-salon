@@ -8,6 +8,10 @@ use App\Models\Inventory;
 use App\Models\Item_Sold;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Transaction;
+use App\Models\Service_Sold;
+use App\Models\Payment_Tokens;
+use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Service\Shipping\RajaOngkirService;
@@ -208,6 +212,145 @@ class OrderController extends Controller
             return response()->json([
                 'status'  => false,
                 'message' => 'Gagal membuat order',
+                'data'    => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Checkout V2
+     * 
+     * 1. Masukan List Produk / Jasa
+     * 2. Masukan ID Pelanggan
+     * 3. Masukan Shipping Cost Jika ada
+     * 4. Masukan Token Pembayaran 
+     * 5. Lakukan proses checkout dengan menambahkan ke Item_Sold jika Product dan Service SOld jika Jasa
+     * 
+     */
+    public function checkoutV2(Request $request){
+        Log::info('OrderController@checkoutV2 called');
+        
+        try{
+            /*
+            {
+                products:[
+                    {
+                        product_id: 1,
+                        name: 'Product 1',
+                        price: 10000,
+                        quantity: 2
+                    },
+                    {
+                        product_id: 2,
+                        name: 'Product 2',
+                        price: 20000,
+                        quantity: 1
+                    }
+                ],
+                service: [
+                    {
+                        service_id: 1,
+                        name: 'Service 1',
+                        price: 50000,
+                        quantity: 1
+                    }
+                ],
+                client_id: 1,
+                shipping_cost: 5000,
+                payment_token: 'token123',
+                payment_method: 'cash',
+            }
+            */
+            $request->validate([
+                'products' => 'nullable|array',
+                'products.*.product_id' => 'nullable|integer|exists:products,id',
+                'products.*.name' => 'nullable|string',
+                'products.*.price' => 'nullable|numeric|min:0',
+                'products.*.quantity' => 'nullable|integer|min:1',
+                'service' => 'nullable|array',
+                'service.*.service_id' => 'nullable|integer|exists:services,id',
+                'service.*.name' => 'nullable|string',
+                'service.*.price' => 'nullable|numeric|min:0',
+                'service.*.quantity' => 'nullable|integer|min:1',
+                'client_id' => 'nullable|integer|exists:clients,id',
+                'shipping_cost' => 'nullable|numeric|min:0',
+                'total_payment' => 'nullable|numeric|min:0',
+                'payment_token' => 'nullable|string',
+                'payment_method' => 'nullable|string|max:255',
+            ]);
+
+            $payload = $request->all();
+            
+            // Validasi token pembayaran
+            if ($request->filled('payment_token')) {
+                $token = Payment_Tokens::where('token', $request->payment_token)->first();
+                if (!$token) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Invalid payment token',
+                    ], 400);
+                }
+                if ($token->expiry) {
+                    // Gunakan Carbon untuk parsing dan perbandingan waktu dengan timezone
+                    $expiry = \Carbon\Carbon::parse($token->expiry)->setTimezone(config('app.timezone', 'UTC'));
+                    $now = \Carbon\Carbon::now(config('app.timezone', 'UTC'));
+                    if ($expiry->lt($now)) {
+                        return response()->json([
+                            'status' => false,
+                            'message' => 'Payment token has expired',
+                        ], 400);
+                    }
+                }
+                if(!$token->user_id || $token->user_id != $request->client_id) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Payment token does not match client',
+                    ], 400);
+                }
+            }
+
+            // Proses pembuatan order
+            DB::beginTransaction();
+            $order = Order::create([
+                'order_number' => 'ORD-' . strtoupper(uniqid()),
+                'client_id' => $request->client_id,
+                'shipping_cost' => $request->shipping_cost ?? 0,
+                'payment' => $request->total_payment ?? 0,
+                'status' => 'pending',
+            ]);
+
+            
+            if($payload['products'] ?? false){
+                foreach ($payload['products'] as $product) {
+                    $item_sold = Item_Sold::create([
+                        'order_id' => $order->id,
+                        'inventory_id' => $product['product_id'],
+                        'quantity' => $product['quantity'],
+                        'sold_date' => now(),
+                    ]);
+                }
+            }
+
+            if($payload['service'] ?? false){
+                foreach ($payload['service'] as $service) {
+                    $service_sold = Service_Sold::create([
+                        'order_id' => $order->id,
+                        'service_id' => $service['service_id'],
+                        'quantity' => $service['quantity'],
+                        'sold_date' => now(),
+                    ]);
+                }
+            }
+
+        }
+        catch (\Throwable $th) {
+            Log::error('OrderController@checkoutV2 error', [
+                'message'  => $th->getMessage(),
+            ]);
+
+            return response()->json([
+                'status'  => false,
+                'message' => 'Gagal melakukan checkout',
                 'data'    => $th->getMessage(),
             ], 500);
         }

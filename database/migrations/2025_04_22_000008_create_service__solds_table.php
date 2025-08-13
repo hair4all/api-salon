@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('service_id')->nullable();
             $table->foreign('service_id')->references('id')->on('services')->nullOnDelete()->cascadeOnUpdate();
+            $table->string('order_id')->nullable();
+            $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete()->
             $table->string('client_id')->nullable();
             $table->foreign('client_id')->references('id')->on('clients')->nullOnDelete()->cascadeOnUpdate();
             $table->string('branch_id')->nullable();

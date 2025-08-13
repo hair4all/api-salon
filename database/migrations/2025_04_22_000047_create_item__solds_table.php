@@ -15,6 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('inventory_id')->nullable();
             $table->foreign('inventory_id')->references('id')->on('inventories')->nullOnDelete()->cascadeOnUpdate();
+            $table->string('order_id')->nullable();
+            $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('branch_id')->nullable();
+            $table->foreign('branch_id')->references('id')->on('branches')->nullOnDelete()->cascadeOnUpdate();
+            $table->string('client_id')->nullable();
+            $table->foreign('client_id')->references('id')->on('clients')->nullOnDelete()->cascadeOnUpdate();
             $table->integer('quantity')->nullable();
             $table->date('sold_date')->nullable();
             $table->boolean('is_deleted')->default(false);

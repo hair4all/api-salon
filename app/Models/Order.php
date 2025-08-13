@@ -18,6 +18,7 @@ class Order extends Model
         'coins',
         'shipping_cost',
         'status',
+        'total_price',
         'is_deleted',
     ];
 

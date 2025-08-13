@@ -12,6 +12,7 @@ class Service extends Model
         'id',
         'branch_id',
         'name',
+        'image',
         'description',
         'price',
         'discount',

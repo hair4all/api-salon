@@ -5,6 +5,8 @@ namespace App\Http\Controllers\BookingService;
 use App\Http\Controllers\Controller;
 
 use App\Models\Booking_Service;
+use App\Models\Client;
+use App\Models\Service;
 use Illuminate\Http\Request;
 
 class BookingServiceController extends Controller
@@ -61,6 +63,73 @@ class BookingServiceController extends Controller
                 'message' => 'Validation error',
                 'data' => $th->getMessage(),
             ]);
+        }
+    }
+
+    public function checkout(Request $request){
+        try{
+
+            $request->validate([
+                'client_id' => 'required|integer',
+                'service_id' => 'required|integer',
+                'branch_id' => 'required|integer',
+                'price' => 'nullable|numeric',
+                'discount' => 'nullable|numeric',
+                'expiry_discount_date' => 'nullable|date',
+                'status' => 'required|string',
+            ]);
+
+            $client = Client::where('is_deleted', 0)->where('id', $request->client_id)->first();
+            if (!$client) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Client not found',
+                ], 404);
+            }
+            $service = Service::where('is_deleted', 0)->where('id', $request->service_id)->where('branch_id', $request->branch_id)->first();
+            if (!$service) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Service not found',
+                ], 404);
+            }
+
+            $price = $request->price ?? $service->price;
+            // Check if the client has enough saldo
+            if ($client->saldo < $price) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Client does not have enough saldo',
+                ], 400);
+            }
+
+            // Create the booking service
+            $booking_service = Booking_Service::create([
+                'client_id' => $request->client_id,
+                'service_id' => $request->service_id,
+                'branch_id' => $request->branch_id,
+                'price' => $price,
+                'discount' => $request->discount ?? 0,
+                'expiry_discount_date' => $request->expiry_discount_date,
+                'status' => $request->status,
+            ]);
+
+            // Deduct the price from the client's saldo
+            $client->decrement('saldo', $request->price);
+            
+            return response()->json([
+                'status' => true,
+                'message' => 'Booking Service created successfully',
+                'data' => $booking_service,
+            ]);
+
+        }
+        catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+                'data' => $th->getMessage(),
+            ], 500);
         }
     }
 

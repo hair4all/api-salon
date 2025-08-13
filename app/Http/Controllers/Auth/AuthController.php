@@ -35,6 +35,7 @@ trait AuthClientTrait
             $token = JwtHelper::generateToken($data, 19200);
 
             return response()->json(['token' => $token]);
+            
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Server error',
@@ -49,15 +50,15 @@ trait AuthClientTrait
             $request->validate([
                 'phone'          => 'required|unique:clients,phone',
                 // 'password'       => 'required|string|min:8|confirmed',
-                'password'       => 'required|string',
-                'name'    => 'required|string|max:255',
+                'password'       => 'nullable|string',
+                'name'    => 'nullable|string|max:255',
                 'address' => 'nullable',
-                'email'   => 'required|email|unique:clients,email',
+                // 'email'   => 'required|email|unique:clients,email',
             ]);
 
             $client = new Client();
-            $client->name      = $request->input('name');
-            $client->email     = $request->input('address');
+            $client->name      = $request->input('name') ?? null;
+            $client->email     = $request->input('address') ?? null;
             $client->phone     = $request->phone;
             $client->password  = Hash::make($request->password);
             $client->address   = $request->input('address') ?? null;

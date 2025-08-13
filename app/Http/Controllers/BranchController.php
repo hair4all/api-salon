@@ -42,7 +42,7 @@ class BranchController extends Controller
                 'phone' => 'nullable|string|max:15',
                 'email' => 'nullable|email|max:255|unique:branches,email',
                 'status' => 'nullable|boolean',
-                'manager_id' => 'nullable|integer|exists:members,id',
+                'manager_id' => 'nullable|integer|exists:workers,id',
             ]);
             $data = $request->all();
             $data['branch_code'] = 'BR-' . strtoupper(uniqid());
