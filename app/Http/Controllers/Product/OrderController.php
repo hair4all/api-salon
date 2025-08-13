@@ -258,6 +258,7 @@ class OrderController extends Controller
                 client_id: 1,
                 shipping_cost: 5000,
                 payment_token: 'token123',
+                total_payment: 70000,
                 payment_method: 'cash',
             }
             */
@@ -341,6 +342,19 @@ class OrderController extends Controller
                     ]);
                 }
             }
+
+            // Hapus token pembayaran
+            if ($request->filled('payment_token')) {
+                $token->delete();
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Order created successfully',
+                'data' => $order,
+            ], 201);
 
         }
         catch (\Throwable $th) {

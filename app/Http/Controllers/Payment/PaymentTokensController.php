@@ -51,7 +51,7 @@ class PaymentTokensController extends Controller
 
             return response()->json($paymentToken, 201);
         } catch (\Throwable $th) {
-                            Log::error('OrderController@store error', [
+                    Log::error('OrderController@store error', [
                     'message' => $th->getMessage(),
                     'trace'   => $th->getTraceAsString(),
                 ]);
@@ -118,7 +118,7 @@ class PaymentTokensController extends Controller
             $paymentToken->update($request->all());
             return response()->json($paymentToken);
         } catch (\Throwable $th) {
-                            Log::error('OrderController@store error', [
+                    Log::error('OrderController@store error', [
                     'message' => $th->getMessage(),
                     'trace'   => $th->getTraceAsString(),
                 ]);
@@ -137,7 +137,7 @@ class PaymentTokensController extends Controller
             $paymentToken->delete();
             return response()->json(['message' => 'Payment token deleted successfully'], 200);
         } catch (\Throwable $th) {
-                            Log::error('OrderController@store error', [
+                    Log::error('OrderController@store error', [
                     'message' => $th->getMessage(),
                     'trace'   => $th->getTraceAsString(),
                 ]);
