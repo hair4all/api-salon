@@ -320,7 +320,7 @@ class OrderController extends Controller
                 'status' => 'pending',
             ]);
 
-            
+            $item_sold = null;
             if($payload['products'] ?? false){
                 foreach ($payload['products'] as $product) {
                     $item_sold = Item_Sold::create([
@@ -332,6 +332,7 @@ class OrderController extends Controller
                 }
             }
 
+            $service_sold = null;
             if($payload['service'] ?? false){
                 foreach ($payload['service'] as $service) {
                     $service_sold = Service_Sold::create([
@@ -341,6 +342,12 @@ class OrderController extends Controller
                         'sold_date' => now(),
                     ]);
                 }
+            }
+
+            // Kurang saldo client jika ada
+            $client = Client::find($request->client_id);
+            if ($client && $request->filled('total_payment')) {
+                $client->decrement('saldo', $request->total_payment);
             }
 
             // Hapus token pembayaran
